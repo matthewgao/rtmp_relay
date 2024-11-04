@@ -1,13 +1,16 @@
 cmake_minimum_required(VERSION 3.10)
 
 # 设置项目名称
-project(RTMPStreamProcessor)
+project(RTMPRelay)
 
 # 查找 FFmpeg 库
 # find_package(FFmpeg REQUIRED)
 
-set(FFMPEG_INCLUDE_DIR "/usr/local/Cellar/ffmpeg/5.0.1/include")
-set(FFMPEG_LIBRARY_DIR "/usr/local/Cellar/ffmpeg/5.0.1/lib") 
+# set(FFMPEG_INCLUDE_DIR "/usr/local/Cellar/ffmpeg/5.0.1/include")
+# set(FFMPEG_LIBRARY_DIR "/usr/local/Cellar/ffmpeg/5.0.1/lib") 
+
+set(FFMPEG_INCLUDE_DIR "/usr/local/Cellar/ffmpeg/6.1.1_7/include")
+set(FFMPEG_LIBRARY_DIR "/usr/local/Cellar/ffmpeg/6.1.1_7/lib") 
 
 include_directories(${FFMPEG_INCLUDE_DIR})
 link_directories(${FFMPEG_LIBRARY_DIR})
@@ -18,7 +21,7 @@ find_library(AVUTIL_LIBRARY NAMES avutil PATHS ${FFMPEG_LIBRARY_DIR})
 
 
 # 添加可执行文件
-add_executable(main main.c)
+add_executable(main main.cpp)
 
 # 链接 FFmpeg 库
 target_link_libraries(main 

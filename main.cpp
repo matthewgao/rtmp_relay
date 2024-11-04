@@ -1,8 +1,9 @@
+extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
 #include <libavutil/log.h>
 #include <libavutil/opt.h>
-
+}
 #define AUDIO_DISCARD_INTERVAL 100
 
 int main(int argc, char *argv[]) {
@@ -84,8 +85,6 @@ int main(int argc, char *argv[]) {
 
                 av_interleaved_write_frame(output_format_context, &pkt);
 
-
-                
                 printf("drop %d\n", audio_frame_count);
             }
             av_packet_unref(&pkt);
