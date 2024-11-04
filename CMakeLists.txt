@@ -21,10 +21,10 @@ find_library(AVUTIL_LIBRARY NAMES avutil PATHS ${FFMPEG_LIBRARY_DIR})
 
 
 # 添加可执行文件
-add_executable(main main.cpp)
+add_executable(rtmp_relay main.cpp delayer.cpp)
 
 # 链接 FFmpeg 库
-target_link_libraries(main 
+target_link_libraries(rtmp_relay 
     PRIVATE
     ${AVFORMAT_LIBRARY}
     ${AVCODEC_LIBRARY}

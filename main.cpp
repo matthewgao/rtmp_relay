@@ -4,6 +4,7 @@ extern "C" {
 #include <libavutil/log.h>
 #include <libavutil/opt.h>
 }
+#include "delayer.h"
 #define AUDIO_DISCARD_INTERVAL 100
 
 int main(int argc, char *argv[]) {
@@ -66,30 +67,37 @@ int main(int argc, char *argv[]) {
 
     avformat_write_header(output_format_context, NULL);
 
-    AVPacket pkt;
+    
     int audio_frame_count = 0;
+    Delayer *delayer = new Delayer(10, output_format_context);
 
     while (1) {
-        if (av_read_frame(input_format_context, &pkt) < 0) break;
+        AVPacket *pkt;
+        pkt = (AVPacket*)av_mallocz(sizeof(AVPacket));
+        if (av_read_frame(input_format_context, pkt) < 0) break;
 
         // 检查流类型
-        if (pkt.stream_index == 0) { // 假设视频流在索引 0
-            av_interleaved_write_frame(output_format_context, &pkt);
-        } else if (pkt.stream_index == 1) { // 假设音频流在索引 1
+        if (pkt->stream_index == 0) { // 假设视频流在索引 0
+            // printf("size %d, duration %lld pts %lld\n", pkt->size, pkt->duration, pkt->pts);
+            // av_interleaved_write_frame(output_format_context, &pkt);
+            delayer->PushVideoFrame(pkt);
+        } else if (pkt->stream_index == 1) { // 假设音频流在索引 1
             audio_frame_count++;
-            if (audio_frame_count % AUDIO_DISCARD_INTERVAL != 0) {
-                for (size_t i = 1; i < pkt.size; i++)
-                {
-                    pkt.data[i] = 0;
-                }
+            // if (audio_frame_count % AUDIO_DISCARD_INTERVAL != 0) {
+            //     for (size_t i = 1; i < pkt->size; i++)
+            //     {
+            //         pkt->data[i] = 0;
+            //     }
+                // printf("size %d, duration %lld pts %lld\n", pkt->size, pkt->duration, pkt->pts);
+                // av_interleaved_write_frame(output_format_context, pkt);
 
-                av_interleaved_write_frame(output_format_context, &pkt);
-
-                printf("drop %d\n", audio_frame_count);
-            }
-            av_packet_unref(&pkt);
+                // printf("drop %d\n", audio_frame_count);
+                
+            // }
+            // av_packet_unref(&pkt);
+            delayer->PushAudioFrame(pkt);
         } else {
-            av_packet_unref(&pkt);
+            av_packet_unref(pkt);
         }
     }
 
