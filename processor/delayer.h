@@ -22,10 +22,10 @@ public:
     Delayer(int deley_sec, AVFormatContext *output_format_context);
     ~Delayer();
 
-    void PushVideoFrame(AVPacket *pkt);
-    void PushAudioFrame(AVPacket *pkt);
+    void pushVideoFrame(AVPacket *pkt);
+    void pushAudioFrame(AVPacket *pkt);
 
-    int GetDelaySec(){
+    int getDelaySec(){
         return this->m_deley_sec;
     }
 
@@ -33,7 +33,7 @@ public:
     Delayer& operator= (const Delayer&) = delete;
 
 private:
-    void Flush();
+    void flush();
 
     shared_ptr<list<AVPacket*> > m_av_packet;
     int m_deley_sec;

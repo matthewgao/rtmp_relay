@@ -20,8 +20,8 @@ public:
     Relayer(string in_url, string out_url);
     ~Relayer();
 
-    int Init();
-    void StartProcess();
+    int init();
+    void startProcess();
 
     Relayer (const Relayer&) = delete;
     Relayer& operator= (const Relayer&) = delete;

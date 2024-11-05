@@ -19,10 +19,10 @@ class Replacer {
 public:
     Replacer();
     ~Replacer();
-    int Init(AVFormatContext* input_format_context);
-    AVPacket* ReplaceAudioToMute(AVPacket *pkt);
-    int CreateAudioDecoder(AVFormatContext* input_format_context);
-    int CreateAudioEncoder();
+    int init(AVFormatContext* input_format_context);
+    AVPacket* replaceAudioToMute(AVPacket *pkt);
+    int createAudioDecoder(AVFormatContext* input_format_context);
+    int createAudioEncoder();
 
     Replacer (const Replacer&) = delete;
     Replacer& operator= (const Replacer&) = delete;

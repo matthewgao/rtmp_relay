@@ -15,7 +15,7 @@ Relayer::~Relayer() {
 }
 
 int
-Relayer::Init() {
+Relayer::init() {
     // 打开输入流
     if (avformat_open_input(&m_input_format_context, m_in_url.c_str(), NULL, NULL) < 0) {
         av_log(NULL, AV_LOG_ERROR, "Could not open input stream\n");
@@ -61,7 +61,7 @@ Relayer::Init() {
 }
 
 void 
-Relayer::StartProcess() {
+Relayer::startProcess() {
     int ret = avformat_write_header(m_output_format_context, NULL);
     if (ret < 0) {
         av_log(NULL, AV_LOG_ERROR, "fail to writer format header %d\n", ret);
@@ -71,7 +71,7 @@ Relayer::StartProcess() {
     int audio_frame_count = 0;
     Delayer *delayer = new Delayer(2, m_output_format_context);
     Replacer *replacer = new Replacer();
-    ret = replacer->Init(m_input_format_context);
+    ret = replacer->init(m_input_format_context);
     if (ret < 0) {
         av_log(NULL, AV_LOG_ERROR, "Could not open output URL %d\n", ret);
         return;
@@ -87,7 +87,7 @@ Relayer::StartProcess() {
         // 检查流类型
         if (pkt->stream_index == 0) { // 假设视频流在索引 0
             // av_log(NULL, AV_LOG_INFO, "size %d, duration %lld pts %lld\n", pkt->size, pkt->duration, pkt->pts);
-            delayer->PushVideoFrame(pkt);
+            delayer->pushVideoFrame(pkt);
         } else if (pkt->stream_index == 1) { // 假设音频流在索引 1
             audio_frame_count++;
             // if (audio_frame_count % AUDIO_DISCARD_INTERVAL != 0) {
@@ -103,10 +103,10 @@ Relayer::StartProcess() {
             // }
             // av_packet_unref(&pkt);
             if ((audio_frame_count/100) % 2 == 1){
-                AVPacket* tmp = replacer->ReplaceAudioToMute(pkt);
-                delayer->PushAudioFrame(tmp);
+                AVPacket* tmp = replacer->replaceAudioToMute(pkt);
+                delayer->pushAudioFrame(tmp);
             } else {
-                delayer->PushAudioFrame(pkt);
+                delayer->pushAudioFrame(pkt);
             }
 
         } else {

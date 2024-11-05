@@ -10,21 +10,21 @@ Delayer::~Delayer() {
 }
 
 void 
-Delayer::PushVideoFrame(AVPacket *pkt) {
+Delayer::pushVideoFrame(AVPacket *pkt) {
     this->m_av_packet->push_back(pkt);
     m_total_deley_ms += pkt->duration;
-    Flush();
+    flush();
 }
 
 void 
-Delayer::PushAudioFrame(AVPacket *pkt) {
+Delayer::pushAudioFrame(AVPacket *pkt) {
     this->m_av_packet->push_back(pkt);
     m_total_deley_ms += pkt->duration;
-    Flush();
+    flush();
 }
 
 void 
-Delayer::Flush() {
+Delayer::flush() {
     if (m_total_deley_ms > m_deley_sec*1000*2) {
         while(true) {
             // printf("flush m_total_deley_ms=%d\n", m_total_deley_ms);

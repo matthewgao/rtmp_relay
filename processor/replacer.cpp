@@ -15,14 +15,14 @@ Replacer::~Replacer() {
 }
 
 int
-Replacer::Init(AVFormatContext* input_format_context) {
-    int ret = CreateAudioDecoder(input_format_context);
+Replacer::init(AVFormatContext* input_format_context) {
+    int ret = createAudioDecoder(input_format_context);
     if (ret < 0) {
         av_log(NULL, AV_LOG_ERROR, "create audio decoder failed, ret=%d\n", ret);
         return ret;
     }
 
-    ret = CreateAudioEncoder();
+    ret = createAudioEncoder();
     if (ret < 0) {
         av_log(NULL, AV_LOG_ERROR, "create audio encoder failed, ret=%d\n", ret);
         return ret;
@@ -32,7 +32,7 @@ Replacer::Init(AVFormatContext* input_format_context) {
 }
 
 int
-Replacer::CreateAudioDecoder(AVFormatContext* input_format_context) {
+Replacer::createAudioDecoder(AVFormatContext* input_format_context) {
     const AVCodec* temp_decoder = NULL;
     m_audio_stream_index = av_find_best_stream(input_format_context, AVMEDIA_TYPE_AUDIO, -1, -1, &temp_decoder, 0);
     if (m_audio_stream_index < 0) {
@@ -66,7 +66,7 @@ Replacer::CreateAudioDecoder(AVFormatContext* input_format_context) {
 }
 
 int
-Replacer::CreateAudioEncoder() {
+Replacer::createAudioEncoder() {
     m_audio_encoder = avcodec_find_encoder(m_audio_decoder_ctx->codec_id);
 
     if (!m_audio_encoder) {
@@ -92,7 +92,7 @@ Replacer::CreateAudioEncoder() {
 }
 
 AVPacket * 
-Replacer::ReplaceAudioToMute(AVPacket *packet) {
+Replacer::replaceAudioToMute(AVPacket *packet) {
     
     int64_t orig_pts = packet->pts;
     int64_t orig_dts = packet->dts;
