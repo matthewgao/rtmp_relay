@@ -24,7 +24,6 @@ public:
     int CreateAudioDecoder(AVFormatContext* input_format_context);
     int CreateAudioEncoder();
 
-    //mutex is not copyable so Replacer must not copyable either
     Replacer (const Replacer&) = delete;
     Replacer& operator= (const Replacer&) = delete;
 

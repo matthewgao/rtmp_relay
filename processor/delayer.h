@@ -19,7 +19,6 @@ using namespace std;
 
 class Delayer {
 public:
-    // Delayer();
     Delayer(int deley_sec, AVFormatContext *output_format_context);
     ~Delayer();
 
@@ -30,7 +29,6 @@ public:
         return this->m_deley_sec;
     }
 
-    //mutex is not copyable so Delayer must not copyable either
     Delayer (const Delayer&) = delete;
     Delayer& operator= (const Delayer&) = delete;
 
