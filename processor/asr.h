@@ -13,6 +13,10 @@ extern "C" {
 #include <mutex>
 #include <condition_variable>
 #include <thread>
+#include "nlsClient.h"
+#include "nlsEvent.h"
+#include "nlsToken.h"
+#include "speechRecognizerRequest.h"
 
 using namespace std;
 
@@ -25,13 +29,16 @@ public:
     void init();
     void start();
     void sendAudio();
+    int checkToken();
+    int generateToken();
 
     Asr (const Asr&) = delete;
     Asr& operator= (const Asr&) = delete;
 
-// private:
-//     shared_ptr<list<AVPacket*> > m_av_packet;
-//     int m_deley_sec;
-//     int m_total_deley_ms;
-//     AVFormatContext *m_output_format_context;
+private:
+    string m_appkey;
+    string m_token;
+    string m_akId;
+    string m_akSecret;
+    long m_expireTime;
 };

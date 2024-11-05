@@ -206,7 +206,7 @@ Replacer::replaceAudioToMute(AVPacket *packet) {
     out_packet->duration = orig_duration;
     // printf("mute audio pts orig_pts  %d packet %d\n", orig_pts, out_packet->pts);
     // printf("mute audio %d dur orig  %d\n", orig_duration, out_packet->duration);
-    av_log(NULL, AV_LOG_INFO, "mute audio size orig  %d\n", out_packet->size);
+    // av_log(NULL, AV_LOG_INFO, "mute audio size orig  %d\n", out_packet->size);
     av_frame_unref(frame);
     av_packet_unref(packet);
     av_packet_free(&packet);
