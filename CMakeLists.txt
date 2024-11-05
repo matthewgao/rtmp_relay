@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 # 设置项目名称
 project(RTMPRelay)
-
+set(CMAKE_BUILD_TYPE Debug)
 # 查找 FFmpeg 库
 # find_package(FFmpeg REQUIRED)
 
@@ -21,7 +21,7 @@ find_library(AVUTIL_LIBRARY NAMES avutil PATHS ${FFMPEG_LIBRARY_DIR})
 
 
 # 添加可执行文件
-add_executable(rtmp_relay main.cpp delayer.cpp)
+add_executable(rtmp_relay main.cpp delayer.cpp replacer.cpp)
 
 # 链接 FFmpeg 库
 target_link_libraries(rtmp_relay 

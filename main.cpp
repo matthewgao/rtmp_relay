@@ -5,6 +5,7 @@ extern "C" {
 #include <libavutil/opt.h>
 }
 #include "delayer.h"
+#include "replacer.h"
 #define AUDIO_DISCARD_INTERVAL 100
 
 int main(int argc, char *argv[]) {
@@ -67,14 +68,22 @@ int main(int argc, char *argv[]) {
 
     avformat_write_header(output_format_context, NULL);
 
-    
     int audio_frame_count = 0;
-    Delayer *delayer = new Delayer(10, output_format_context);
+    Delayer *delayer = new Delayer(2, output_format_context);
+    Replacer *replacer = new Replacer();
+    int ret = replacer->Init(input_format_context, input_format_context->streams[1]->codecpar);
+    if (ret < 0) {
+        av_log(NULL, AV_LOG_ERROR, "Could not open output URL %d\n", ret);
+        return -1;
+    }
 
     while (1) {
-        AVPacket *pkt;
-        pkt = (AVPacket*)av_mallocz(sizeof(AVPacket));
-        if (av_read_frame(input_format_context, pkt) < 0) break;
+        AVPacket *pkt = av_packet_alloc();
+        // pkt = (AVPacket*)av_mallocz(sizeof(AVPacket));
+        if (av_read_frame(input_format_context, pkt) < 0) {
+            av_freep(pkt);
+            break;
+        }
 
         // 检查流类型
         if (pkt->stream_index == 0) { // 假设视频流在索引 0
@@ -95,14 +104,20 @@ int main(int argc, char *argv[]) {
                 
             // }
             // av_packet_unref(&pkt);
-            delayer->PushAudioFrame(pkt);
+            if ((audio_frame_count/100) % 2 == 1){
+                AVPacket* tmp = replacer->ReplaceAudioToMute(pkt);
+                delayer->PushAudioFrame(tmp);
+            } else {
+                delayer->PushAudioFrame(pkt);
+            }
+
         } else {
             av_packet_unref(pkt);
+            av_packet_free(&pkt);
         }
     }
 
     av_write_trailer(output_format_context);
-
     avio_closep(&output_format_context->pb);
     avformat_free_context(output_format_context);
     avformat_close_input(&input_format_context);

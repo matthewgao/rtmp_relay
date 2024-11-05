@@ -28,14 +28,15 @@ void
 Delayer::Flush() {
     if (m_total_deley_ms > m_deley_sec*1000*2) {
         while(true) {
-            printf("flush m_total_deley_ms=%d\n", m_total_deley_ms);
+            // printf("flush m_total_deley_ms=%d\n", m_total_deley_ms);
             AVPacket *p = this->m_av_packet->front();
             if (m_total_deley_ms - p->duration > m_deley_sec*1000*2) {
                 this->m_av_packet->pop_front();
                 m_total_deley_ms -= p->duration;
                 av_interleaved_write_frame(m_output_format_context, p);
                 av_packet_unref(p);
-                av_freep(p);
+                // av_freep(p);
+                av_packet_free(&p);
             } else {
                 break;
             }
