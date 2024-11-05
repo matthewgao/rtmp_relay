@@ -4,8 +4,8 @@ extern "C" {
 #include <libavutil/log.h>
 #include <libavutil/opt.h>
 }
-#include "delayer.h"
-#include "replacer.h"
+#include "processor/delayer.h"
+#include "processor/replacer.h"
 #define AUDIO_DISCARD_INTERVAL 100
 
 int main(int argc, char *argv[]) {
@@ -17,7 +17,6 @@ int main(int argc, char *argv[]) {
     const char* input_url = argv[1];
     const char* output_url = argv[2];
 
-    // av_register_all();
     avformat_network_init();
 
     AVFormatContext *input_format_context = NULL;
@@ -71,7 +70,7 @@ int main(int argc, char *argv[]) {
     int audio_frame_count = 0;
     Delayer *delayer = new Delayer(2, output_format_context);
     Replacer *replacer = new Replacer();
-    int ret = replacer->Init(input_format_context, input_format_context->streams[1]->codecpar);
+    int ret = replacer->Init(input_format_context);
     if (ret < 0) {
         av_log(NULL, AV_LOG_ERROR, "Could not open output URL %d\n", ret);
         return -1;

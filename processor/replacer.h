@@ -19,9 +19,9 @@ class Replacer {
 public:
     Replacer();
     ~Replacer();
-    int Init(AVFormatContext* input_format_context, const AVCodecParameters *par);
+    int Init(AVFormatContext* input_format_context);
     AVPacket* ReplaceAudioToMute(AVPacket *pkt);
-    int CreateAudioDecoder(AVFormatContext* input_format_context, const AVCodecParameters *par);
+    int CreateAudioDecoder(AVFormatContext* input_format_context);
     int CreateAudioEncoder();
 
     //mutex is not copyable so Replacer must not copyable either
@@ -29,8 +29,9 @@ public:
     Replacer& operator= (const Replacer&) = delete;
 
 private:
-    AVCodec *m_audio_decoder = nullptr;
-    AVCodecContext *m_audio_decoder_ctx = nullptr;
-    const AVCodec *m_audio_encoder = nullptr;
-    AVCodecContext *m_audio_encoder_ctx = nullptr;
+    AVCodec *m_audio_decoder;
+    AVCodecContext *m_audio_decoder_ctx;
+    const AVCodec *m_audio_encoder;
+    AVCodecContext *m_audio_encoder_ctx;
+    int m_audio_stream_index;
 };

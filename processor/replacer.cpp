@@ -1,8 +1,13 @@
 #include "replacer.h"
 #include <chrono>
 
-Replacer::Replacer(){
 
+Replacer::Replacer(){
+    m_audio_decoder = nullptr;
+    m_audio_decoder_ctx = nullptr;
+    m_audio_encoder = nullptr;
+    m_audio_encoder_ctx = nullptr;
+    m_audio_stream_index = 1;
 }
 
 Replacer::~Replacer() {
@@ -10,8 +15,8 @@ Replacer::~Replacer() {
 }
 
 int
-Replacer::Init(AVFormatContext* input_format_context, const AVCodecParameters *par) {
-    int ret = CreateAudioDecoder(input_format_context, par);
+Replacer::Init(AVFormatContext* input_format_context) {
+    int ret = CreateAudioDecoder(input_format_context);
     if (ret < 0) {
         return ret;
     }
@@ -23,16 +28,14 @@ Replacer::Init(AVFormatContext* input_format_context, const AVCodecParameters *p
 }
 
 int
-Replacer::CreateAudioDecoder(AVFormatContext* input_format_context, const AVCodecParameters *par) {
-    // Find the audio stream
-    // AVCodec *m_audio_decoder = NULL;
+Replacer::CreateAudioDecoder(AVFormatContext* input_format_context) {
     const AVCodec* temp_decoder = NULL;
-
-    int audio_stream_index = av_find_best_stream(input_format_context, AVMEDIA_TYPE_AUDIO, -1, -1, &temp_decoder, 0);
-    if (audio_stream_index < 0) {
+    m_audio_stream_index = av_find_best_stream(input_format_context, AVMEDIA_TYPE_AUDIO, -1, -1, &temp_decoder, 0);
+    if (m_audio_stream_index < 0) {
         fprintf(stderr, "Could not find an audio stream\n");
         return -1;
     }
+
     m_audio_decoder = const_cast<AVCodec *>(temp_decoder);
 
     // Create a codec context for the m_audio_decoder
@@ -42,8 +45,7 @@ Replacer::CreateAudioDecoder(AVFormatContext* input_format_context, const AVCode
         return -1;
     }
 
-    // avcodec_parameters_to_context(m_audio_decoder_ctx, input_format_ctx->streams[audio_stream_index]->codecpar);
-    avcodec_parameters_to_context(m_audio_decoder_ctx, par);
+    avcodec_parameters_to_context(m_audio_decoder_ctx, input_format_context->streams[m_audio_stream_index]->codecpar);
 
     if (avcodec_open2(m_audio_decoder_ctx, m_audio_decoder, NULL) < 0) {
         fprintf(stderr, "Could not open m_audio_decoder\n");
@@ -95,9 +97,9 @@ Replacer::ReplaceAudioToMute(AVPacket *packet) {
     // AVPacket *out_packet;
     // out_packet = (AVPacket*)av_mallocz(sizeof(AVPacket));
     // av_init_packet(out_packet);
-    int64_t orig = packet->pts;
-    int64_t dts = packet->dts;
-    int64_t duration = packet->duration;
+    int64_t orig_pts = packet->pts;
+    int64_t orig_dts = packet->dts;
+    int64_t orig_duration = packet->duration;
     
     while(true) {
         int ret = avcodec_send_packet(m_audio_decoder_ctx, packet);
@@ -134,10 +136,10 @@ Replacer::ReplaceAudioToMute(AVPacket *packet) {
         }
 
         if (ret == AVERROR(EAGAIN)) {
-            // avcodec_send_packet(m_audio_decoder_ctx, packet);
-            // printf("avcodec_receive_frame EAGAIN\n");
-            // continue;
-            break;
+            avcodec_send_packet(m_audio_decoder_ctx, packet);
+            printf("avcodec_receive_frame EAGAIN\n");
+            continue;
+            // break;
         } else if (ret == AVERROR_EOF) {
             // End of file reached
             av_frame_unref(frame);
@@ -180,10 +182,9 @@ Replacer::ReplaceAudioToMute(AVPacket *packet) {
         }
 
         if (ret == AVERROR(EAGAIN)) {
-            // avcodec_send_frame(m_audio_encoder_ctx, frame);
-            // printf("avcodec_receive_packet EAGAIN\n");
-            // continue;
-            break;
+            avcodec_send_frame(m_audio_encoder_ctx, frame);
+            printf("avcodec_receive_packet EAGAIN\n");
+            continue;
         } else if (ret == AVERROR_EOF) {
             // End of file reached
             av_frame_unref(frame);
@@ -195,13 +196,13 @@ Replacer::ReplaceAudioToMute(AVPacket *packet) {
             return packet;
         }
     }
-    out_packet->pts = orig;
-    out_packet->dts = dts;
+    out_packet->pts = orig_pts;
+    out_packet->dts = orig_dts;
     out_packet->stream_index = 1;
     // av_packet_rescale_ts(out_packet, m_audio_decoder_ctx->time_base, m_audio_encoder_ctx->time_base);
-    out_packet->duration = duration;
-    printf("mute audio pts orig  %d packet %d\n", orig, out_packet->pts);
-    printf("mute audio %d dur orig  %d\n", duration,out_packet->duration);
+    out_packet->duration = orig_duration;
+    // printf("mute audio pts orig_pts  %d packet %d\n", orig_pts, out_packet->pts);
+    // printf("mute audio %d dur orig  %d\n", orig_duration, out_packet->duration);
     printf("mute audio size orig  %d\n", out_packet->size);
     av_frame_unref(frame);
     av_packet_unref(packet);
