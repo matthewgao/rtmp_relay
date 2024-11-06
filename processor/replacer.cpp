@@ -138,11 +138,13 @@ Replacer::replaceAudioToMute(AVPacket *packet) {
         } else if (ret == AVERROR_EOF) {
             av_log(NULL, AV_LOG_ERROR, "avcodec_receive_frame AVERROR_EOF\n");
             av_frame_unref(frame);
+            av_frame_free(&frame);
             return packet;
         } else {
             // Error occurred
             av_log(NULL, AV_LOG_ERROR, "avcodec_receive_frame unknown error\n");
             av_frame_unref(frame);
+            av_frame_free(&frame);
             return packet;
         }
     }
@@ -160,11 +162,13 @@ Replacer::replaceAudioToMute(AVPacket *packet) {
             // End of file reached
             av_log(NULL, AV_LOG_ERROR, "avcodec_send_frame AVERROR_EOF\n");
             av_frame_unref(frame);
+            av_frame_free(&frame);
             return packet;
         } else {
             // Error occurred
             av_log(NULL, AV_LOG_ERROR, "avcodec_send_frame unknown error\n");
             av_frame_unref(frame);
+            av_frame_free(&frame);
             return packet;
         }
     }
@@ -185,6 +189,7 @@ Replacer::replaceAudioToMute(AVPacket *packet) {
             // End of file reached
             av_log(NULL, AV_LOG_ERROR, "avcodec_receive_packet AVERROR_EOF\n");
             av_frame_unref(frame);
+            av_frame_free(&frame);
             av_packet_unref(out_packet);
             av_packet_free(&out_packet);
             return packet;
@@ -193,6 +198,7 @@ Replacer::replaceAudioToMute(AVPacket *packet) {
             printf("avcodec_receive_packet unkown\n");
             av_log(NULL, AV_LOG_ERROR, "avcodec_receive_packet unknown error\n");
             av_frame_unref(frame);
+            av_frame_free(&frame);
             av_packet_unref(out_packet);
             av_packet_free(&out_packet);
             return packet;
@@ -208,6 +214,7 @@ Replacer::replaceAudioToMute(AVPacket *packet) {
     // printf("mute audio %d dur orig  %d\n", orig_duration, out_packet->duration);
     // av_log(NULL, AV_LOG_INFO, "mute audio size orig  %d\n", out_packet->size);
     av_frame_unref(frame);
+    av_frame_free(&frame);
     av_packet_unref(packet);
     av_packet_free(&packet);
     return out_packet;

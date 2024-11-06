@@ -1,7 +1,10 @@
-aux_source_directory(. DIR_LIB_SRCS)
-
 set (CMAKE_CXX_STANDARD 17)
 find_package(PkgConfig REQUIRED)
+
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address  -static-libasan -fno-omit-frame-pointer -g")
+#set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fsanitize=address -static-libasan")
+add_definitions("-Wall -g")
+aux_source_directory(. DIR_LIB_SRCS)
 
 message(STATUS "DIR_SRCS: [${DIR_SRCS}]")
 
@@ -16,6 +19,11 @@ set(FFMPEG_INCLUDE_DIR "/usr/local/Cellar/ffmpeg/6.1.1_7/include")
 set(FFMPEG_LIBRARY_DIR "/usr/local/Cellar/ffmpeg/6.1.1_7/lib") 
 set(ASR_INCLUDE_DIR "../alibabacloud-nls-cpp-sdk/build/install/NlsSdk3.X_LINUX/include")
 set(ASR_LIBRARY_DIR "../alibabacloud-nls-cpp-sdk/build/install/NlsSdk3.X_LINUX/lib") 
+
+# set(CMAKE_C_COMPILER "/usr/local/gcc-5.3.0/bin/gcc")
+# set(CMAKE_CXX_COMPILER "/usr/local/gcc-5.3.0/bin/g++")
+
+
 
 include_directories(${FFMPEG_INCLUDE_DIR})
 include_directories(${ASR_INCLUDE_DIR})
@@ -37,3 +45,11 @@ target_link_libraries(processor
     ${AVCODEC_LIBRARY}
     ${AVUTIL_LIBRARY}
 )
+
+# target_link_libraries(processor 
+#     PRIVATE
+#     ${AVFORMAT_LIBRARY}
+#     ${AVCODEC_LIBRARY}
+#     ${AVUTIL_LIBRARY}
+#     asan
+# )

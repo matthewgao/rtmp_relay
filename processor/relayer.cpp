@@ -80,7 +80,7 @@ Relayer::startProcess() {
     while (1) {
         AVPacket *pkt = av_packet_alloc();
         if (av_read_frame(m_input_format_context, pkt) < 0) {
-            av_freep(pkt);
+            av_packet_free(&pkt);
             break;
         }
 
@@ -110,7 +110,7 @@ Relayer::startProcess() {
             }
 
         } else {
-            av_packet_unref(pkt);
+            // av_packet_unref(pkt);
             av_packet_free(&pkt);
         }
     }
