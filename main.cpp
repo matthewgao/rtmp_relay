@@ -85,6 +85,7 @@ int main(int argc, char *argv[]) {
     avformat_network_init();
 
     Relayer relayer(g_in_url.c_str(), g_out_url.c_str());
+    relayer.setKey(g_akId, g_akSecret, g_appkey);
     int ret = relayer.init();
     if (ret < 0) {
         av_log(NULL, AV_LOG_ERROR, "relayer init fail %d\n", ret);

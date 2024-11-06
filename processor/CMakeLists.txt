@@ -17,8 +17,8 @@ find_package(PkgConfig REQUIRED)
 
 set(FFMPEG_INCLUDE_DIR "/usr/local/Cellar/ffmpeg/6.1.1_7/include")
 set(FFMPEG_LIBRARY_DIR "/usr/local/Cellar/ffmpeg/6.1.1_7/lib") 
-set(ASR_INCLUDE_DIR "../alibabacloud-nls-cpp-sdk/build/install/NlsSdk3.X_LINUX/include")
-set(ASR_LIBRARY_DIR "../alibabacloud-nls-cpp-sdk/build/install/NlsSdk3.X_LINUX/lib") 
+set(ASR_INCLUDE_DIR "./../alibabacloud-nls-cpp-sdk/build/install/NlsSdk3.X_LINUX/include")
+set(ASR_LIBRARY_DIR "./../alibabacloud-nls-cpp-sdk/build/install/NlsSdk3.X_LINUX/lib") 
 
 # set(CMAKE_C_COMPILER "/usr/local/gcc-5.3.0/bin/gcc")
 # set(CMAKE_CXX_COMPILER "/usr/local/gcc-5.3.0/bin/g++")
@@ -33,6 +33,8 @@ link_directories(${ASR_LIBRARY_DIR})
 find_library(AVFORMAT_LIBRARY NAMES avformat PATHS ${FFMPEG_LIBRARY_DIR})
 find_library(AVCODEC_LIBRARY NAMES avcodec PATHS ${FFMPEG_LIBRARY_DIR})
 find_library(AVUTIL_LIBRARY NAMES avutil PATHS ${FFMPEG_LIBRARY_DIR})
+find_library(SWR_LIBRARY NAMES swresample PATHS ${FFMPEG_LIBRARY_DIR})
+find_library(ASR_LIBRARY NAMES alibabacloud-idst-speech PATHS ${ASR_LIBRARY_DIR})
 
 
 # 添加可执行文件
@@ -44,6 +46,8 @@ target_link_libraries(processor
     ${AVFORMAT_LIBRARY}
     ${AVCODEC_LIBRARY}
     ${AVUTIL_LIBRARY}
+    ${ASR_LIBRARY}
+    ${SWR_LIBRARY}
 )
 
 # target_link_libraries(processor 
@@ -51,5 +55,6 @@ target_link_libraries(processor
 #     ${AVFORMAT_LIBRARY}
 #     ${AVCODEC_LIBRARY}
 #     ${AVUTIL_LIBRARY}
+#     ${SWSCALE_LIBRARY}
 #     asan
 # )

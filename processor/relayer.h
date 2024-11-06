@@ -22,6 +22,7 @@ public:
 
     int init();
     void startProcess();
+    void setKey(string akId, string akSecret, string appkey);
 
     Relayer (const Relayer&) = delete;
     Relayer& operator= (const Relayer&) = delete;
@@ -31,4 +32,7 @@ private:
     string m_out_url;
     AVFormatContext *m_input_format_context = NULL;
     AVFormatContext *m_output_format_context = NULL;
+    string m_appkey;
+    string m_akId;
+    string m_akSecret;
 };

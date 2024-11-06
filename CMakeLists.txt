@@ -46,6 +46,7 @@ link_directories(${FFMPEG_LIBRARY_DIR})
 find_library(AVFORMAT_LIBRARY NAMES avformat PATHS ${FFMPEG_LIBRARY_DIR})
 find_library(AVCODEC_LIBRARY NAMES avcodec PATHS ${FFMPEG_LIBRARY_DIR})
 find_library(AVUTIL_LIBRARY NAMES avutil PATHS ${FFMPEG_LIBRARY_DIR})
+find_library(SWR_LIBRARY NAMES swresample PATHS ${FFMPEG_LIBRARY_DIR})
 
 # 添加可执行文件
 add_executable(rtmp_relay ${DIR_SRCS})
@@ -55,6 +56,7 @@ target_link_libraries(rtmp_relay
     ${AVFORMAT_LIBRARY}
     ${AVCODEC_LIBRARY}
     ${AVUTIL_LIBRARY}
+    ${SWR_LIBRARY}
 )
 
 # target_link_libraries(rtmp_relay 

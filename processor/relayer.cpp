@@ -1,6 +1,7 @@
 #include "relayer.h"
 #include "delayer.h"
 #include "replacer.h"
+#include "asr.h"
 
 Relayer::Relayer(string in_url, string out_url):m_in_url(in_url), m_out_url(out_url) {
 
@@ -77,6 +78,15 @@ Relayer::startProcess() {
         return;
     }
 
+    Asr *asr = new Asr(m_akId, m_akSecret, m_appkey);
+    asr->init();
+    asr->createAudioDecoder(m_input_format_context);
+    ret = asr->start(); 
+    if (ret < 0) {
+        av_log(NULL, AV_LOG_ERROR, "Could not open asr %d\n", ret);
+        return;
+    }
+
     while (1) {
         AVPacket *pkt = av_packet_alloc();
         if (av_read_frame(m_input_format_context, pkt) < 0) {
@@ -102,6 +112,7 @@ Relayer::startProcess() {
                 
             // }
             // av_packet_unref(&pkt);
+            asr->sendAudio(pkt);
             if ((audio_frame_count/100) % 2 == 1){
                 AVPacket* tmp = replacer->replaceAudioToMute(pkt);
                 delayer->pushAudioFrame(tmp);
@@ -114,4 +125,11 @@ Relayer::startProcess() {
             av_packet_free(&pkt);
         }
     }
+}
+
+void 
+Relayer::setKey(string akId, string akSecret, string appkey) {
+    m_akId = akId;
+    m_akSecret = akSecret;
+    m_appkey = appkey;
 }
