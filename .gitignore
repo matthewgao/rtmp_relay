@@ -12,3 +12,4 @@ _deps
 CMakeUserPresets.json
 build/
 .vscode/
+alibabacloud-nls-cpp-sdk/build/
