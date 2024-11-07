@@ -72,11 +72,13 @@ void onChannelClosed(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
 }
 
 void onTranscriptionResultChanged(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
-	printf("onTranscriptionResultChanged code: %d result: %s\n", cbEvent->getStatusCode(), cbEvent->getResult());
+	printf("onTranscriptionResultChanged code: %d result: %s, wordlist: %d\n", cbEvent->getStatusCode(), cbEvent->getResult(), 
+        cbEvent->getSentenceWordsList().size());
 }
 
 void onTranscriptionCompleted(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
-	printf("onTranscriptionCompleted code: %d task id: %s\n", cbEvent->getStatusCode(), cbEvent->getResult());
+	printf("onTranscriptionCompleted code: %d task id: %s  wordlist: %d\n", cbEvent->getStatusCode(), cbEvent->getResult(),
+        cbEvent->getSentenceWordsList().size());
 }
 
 void onSentenceBegin(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
@@ -84,11 +86,26 @@ void onSentenceBegin(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
 }
 
 void onSentenceEnd(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
-	printf("onSentenceEnd status code: %d task id: %s\n", cbEvent->getStatusCode(), cbEvent->getResult());
+	printf("onSentenceEnd status code: %d task id: %s wordlist: %d\n", cbEvent->getStatusCode(), cbEvent->getResult(), 
+        cbEvent->getSentenceWordsList().size());
+
+    Asr* asr = (Asr*)cbParam;
+    auto list = cbEvent->getSentenceWordsList();
+    for (auto &item : list) {
+        printf("%d %d %s | ", item.startTime, item.endTime, item.text.c_str());
+        if (item.text.find("十一") != std::string::npos) {
+            int64_t base = asr->getTimeBase();
+            int64_t start_pts = base + item.startTime;
+            int64_t end_pts = base + item.endTime;
+            asr->getDelayer()->replaceAudioPacket(start_pts, end_pts);
+        }
+    }
+    printf("\n");
 }
 
 Asr::Asr(string akId, string akSecret, string m_appkey):m_akId(akId),m_akSecret(akSecret),m_appkey(m_appkey) {
 	pcmresample_init(&m_pr_ctx);
+    m_first_audio_pts = 0;
 }
 
 Asr::~Asr() {
@@ -194,7 +211,7 @@ Asr::start() {
     // 设置是否在后处理中执行数字转写, 可选参数. 默认false
     m_request->setInverseTextNormalization(false);
     m_request->setEnableWords(true);
-    m_request->setIntermediateResult(true);
+    // m_request->setIntermediateResult(true);
 
 
     int ret = m_request->start();
@@ -253,6 +270,10 @@ Asr::createAudioDecoder(AVFormatContext* input_format_context) {
 int 
 Asr::sendAudio(AVPacket *pkt) {
     checkToken();
+
+    if (m_first_audio_pts == 0) {
+        m_first_audio_pts = pkt->pts;
+    }
 
     while(true) {
         int ret = avcodec_send_packet(m_audio_decoder_ctx, pkt);

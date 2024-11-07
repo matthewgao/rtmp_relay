@@ -24,6 +24,10 @@ public:
     int createAudioDecoder(AVFormatContext* input_format_context);
     int createAudioEncoder();
 
+    int getAudioIndex() {
+        return m_audio_stream_index;
+    }
+
     Replacer (const Replacer&) = delete;
     Replacer& operator= (const Replacer&) = delete;
 
@@ -33,4 +37,5 @@ private:
     const AVCodec *m_audio_encoder;
     AVCodecContext *m_audio_encoder_ctx;
     int m_audio_stream_index;
+    AVRational m_time_base;
 };

@@ -52,6 +52,20 @@ Relayer::init() {
         }
     }
 
+    m_audio_stream_index = av_find_best_stream(m_input_format_context, AVMEDIA_TYPE_AUDIO, -1, -1, NULL, 0);
+    if (m_audio_stream_index < 0) {
+        av_log(NULL, AV_LOG_ERROR, "Could not find an audio stream, m_audio_stream_index=%d\n", m_audio_stream_index);
+        return -1;
+    }
+
+    m_video_stream_index = av_find_best_stream(m_input_format_context, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, 0);
+    if (m_video_stream_index < 0) {
+        av_log(NULL, AV_LOG_ERROR, "Could not find an video stream, m_video_stream_index=%d\n", m_video_stream_index);
+        return -1;
+    }
+
+    av_log(NULL, AV_LOG_INFO, "m_video_stream_index=%d, m_audio_stream_index=%d\n", m_video_stream_index, m_audio_stream_index);
+
     // 打开输出流
     if (!(m_output_format_context->oformat->flags & AVFMT_NOFILE)) {
         if (avio_open(&m_output_format_context->pb, m_out_url.c_str(), AVIO_FLAG_WRITE) < 0) {
@@ -70,7 +84,7 @@ Relayer::startProcess() {
     }
 
     int audio_frame_count = 0;
-    Delayer *delayer = new Delayer(2, m_output_format_context);
+    Delayer *delayer = new Delayer(15, m_output_format_context);
     Replacer *replacer = new Replacer();
     ret = replacer->init(m_input_format_context);
     if (ret < 0) {
@@ -78,8 +92,11 @@ Relayer::startProcess() {
         return;
     }
 
+    delayer->setReplacer(replacer);
+
     Asr *asr = new Asr(m_akId, m_akSecret, m_appkey);
     asr->init();
+    asr->setDelayer(delayer);
     asr->createAudioDecoder(m_input_format_context);
     ret = asr->start(); 
     if (ret < 0) {
@@ -113,12 +130,13 @@ Relayer::startProcess() {
             // }
             // av_packet_unref(&pkt);
             asr->sendAudio(pkt);
-            if ((audio_frame_count/100) % 2 == 1){
-                AVPacket* tmp = replacer->replaceAudioToMute(pkt);
-                delayer->pushAudioFrame(tmp);
-            } else {
-                delayer->pushAudioFrame(pkt);
-            }
+            delayer->pushAudioFrame(pkt);
+            // if ((audio_frame_count/100) % 2 == 1){
+            //     AVPacket* tmp = replacer->replaceAudioToMute(pkt);
+            //     delayer->pushAudioFrame(tmp);
+            // } else {
+            //     delayer->pushAudioFrame(pkt);
+            // }
 
         } else {
             // av_packet_unref(pkt);

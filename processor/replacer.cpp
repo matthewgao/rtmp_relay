@@ -40,6 +40,8 @@ Replacer::createAudioDecoder(AVFormatContext* input_format_context) {
         return -1;
     }
 
+    av_log(NULL, AV_LOG_ERROR, "audio stream, m_audio_stream_index=%d\n", m_audio_stream_index);
+
     m_audio_decoder = const_cast<AVCodec *>(temp_decoder);
 
     // Create a codec context for the m_audio_decoder
@@ -50,6 +52,7 @@ Replacer::createAudioDecoder(AVFormatContext* input_format_context) {
     }
 
     avcodec_parameters_to_context(m_audio_decoder_ctx, input_format_context->streams[m_audio_stream_index]->codecpar);
+    m_time_base =  input_format_context->streams[m_audio_stream_index]->time_base;
 
     if (avcodec_open2(m_audio_decoder_ctx, m_audio_decoder, NULL) < 0) {
         av_log(NULL, AV_LOG_ERROR, "Could not open m_audio_decoder_ctx\n");
@@ -210,7 +213,8 @@ Replacer::replaceAudioToMute(AVPacket *packet) {
     out_packet->stream_index = m_audio_stream_index;
     // av_packet_rescale_ts(out_packet, m_audio_decoder_ctx->time_base, m_audio_encoder_ctx->time_base);
     out_packet->duration = orig_duration;
-    // printf("mute audio pts orig_pts  %d packet %d\n", orig_pts, out_packet->pts);
+    //int64_t ms = av_rescale_q(out_packet->pts, m_time_base, (AVRational){1,1000});
+    //printf("mute audio pts orig_pts  %d packet %d %d\n", out_packet->duration, out_packet->pts, ms);
     // printf("mute audio %d dur orig  %d\n", orig_duration, out_packet->duration);
     // av_log(NULL, AV_LOG_INFO, "mute audio size orig  %d\n", out_packet->size);
     av_frame_unref(frame);

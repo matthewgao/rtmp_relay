@@ -35,4 +35,6 @@ private:
     string m_appkey;
     string m_akId;
     string m_akSecret;
+    int m_audio_stream_index;
+    int m_video_stream_index;
 };

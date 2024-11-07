@@ -8,7 +8,7 @@ set (CMAKE_CXX_STANDARD 17)
 # set(CMAKE_CXX_COMPILER "/usr/local/gcc-5.4.0/bin/g++")
 
 
-add_definitions("-Wall -g")
+add_definitions("-Wall")
 # if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 # # enable asan only for debug
 #     if(CMAKE_BUILD_TYPE MATCHES "Debug")
@@ -30,18 +30,17 @@ aux_source_directory(. DIR_SRCS)
 # this is not necessary if you have installed FFmpeg in a standard path
 # set(FFMPEG_INCLUDE_DIR "/usr/local/Cellar/ffmpeg/5.0.1/include")
 # set(FFMPEG_LIBRARY_DIR "/usr/local/Cellar/ffmpeg/5.0.1/lib") 
-set(FFMPEG_INCLUDE_DIR "/usr/local/Cellar/ffmpeg/6.1.1_7/include")
-set(FFMPEG_LIBRARY_DIR "/usr/local/Cellar/ffmpeg/6.1.1_7/lib") 
+# set(FFMPEG_INCLUDE_DIR "/usr/local/Cellar/ffmpeg/6.1.1_7/include")
+# set(FFMPEG_LIBRARY_DIR "/usr/local/Cellar/ffmpeg/6.1.1_7/lib") 
+# include_directories(${FFMPEG_INCLUDE_DIR})
+# link_directories(${FFMPEG_LIBRARY_DIR})
 
 if (UNIX)
     SET(CMAKE_CXX_FLAGS "-pthread")
 endif (UNIX)
 
-include_directories(${FFMPEG_INCLUDE_DIR})
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/processor")
 include_directories(.)
-
-link_directories(${FFMPEG_LIBRARY_DIR})
 
 find_library(AVFORMAT_LIBRARY NAMES avformat PATHS ${FFMPEG_LIBRARY_DIR})
 find_library(AVCODEC_LIBRARY NAMES avcodec PATHS ${FFMPEG_LIBRARY_DIR})
@@ -68,4 +67,6 @@ target_link_libraries(rtmp_relay
 #     ${AVCODEC_LIBRARY}
 #     ${AVUTIL_LIBRARY}
 #     asan
+#     z
+#     fdk-aac
 # )

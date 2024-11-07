@@ -20,6 +20,7 @@ extern "C" {
 #include "nlsEvent.h"
 #include "nlsToken.h"
 #include "speechTranscriberRequest.h"
+#include "delayer.h"
 
 using namespace std;
 
@@ -66,6 +67,18 @@ public:
     Asr (const Asr&) = delete;
     Asr& operator= (const Asr&) = delete;
 
+    int64_t getTimeBase(){
+        return m_first_audio_pts;
+    }
+
+    void setDelayer(Delayer* r) {
+        m_delayer = r;
+    }
+
+    Delayer* getDelayer() {
+        return m_delayer;
+    }
+
 private:
     string m_appkey;
     string m_token;
@@ -77,4 +90,6 @@ private:
     AVCodec *m_audio_decoder;
     AVCodecContext *m_audio_decoder_ctx;
     int m_audio_stream_index;
+    int64_t m_first_audio_pts;
+    Delayer* m_delayer;
 };

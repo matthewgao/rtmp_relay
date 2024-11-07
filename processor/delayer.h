@@ -13,6 +13,7 @@ extern "C" {
 #include <mutex>
 #include <condition_variable>
 #include <thread>
+#include "replacer.h"
 
 using namespace std;
 
@@ -24,9 +25,14 @@ public:
 
     void pushVideoFrame(AVPacket *pkt);
     void pushAudioFrame(AVPacket *pkt);
+    void replaceAudioPacket(int64_t start, int64_t end);
 
     int getDelaySec(){
         return this->m_deley_sec;
+    }
+
+    void setReplacer(Replacer* r) {
+        m_replacer = r;
     }
 
     Delayer (const Delayer&) = delete;
@@ -35,8 +41,10 @@ public:
 private:
     void flush();
 
-    shared_ptr<list<AVPacket*> > m_av_packet;
+    list<AVPacket*> m_av_packet;
     int m_deley_sec;
     int m_total_deley_ms;
     AVFormatContext *m_output_format_context;
+    Replacer *m_replacer;
+    std::mutex m_mutex;
 };
