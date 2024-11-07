@@ -271,9 +271,9 @@ int
 Asr::sendAudio(AVPacket *pkt) {
     checkToken();
 
-    if (m_first_audio_pts == 0) {
-        m_first_audio_pts = pkt->pts;
-    }
+    // if (m_first_audio_pts == 0) {
+    //     m_first_audio_pts = pkt->pts;
+    // }
 
     while(true) {
         int ret = avcodec_send_packet(m_audio_decoder_ctx, pkt);
@@ -302,7 +302,11 @@ Asr::sendAudio(AVPacket *pkt) {
                 av_log(NULL, AV_LOG_ERROR, "pcmresample_resample failed\n");
             }
 
-            m_request->sendAudio(m_pr_ctx.data, m_pr_ctx.data_len, ENCODER_OPUS);
+            int sent_byte = m_request->sendAudio(m_pr_ctx.data, m_pr_ctx.data_len, ENCODER_OPUS);
+            if (m_first_audio_pts == 0 && sent_byte > 0) {
+                m_first_audio_pts = pkt->pts;
+            }
+
             break;
         }
 
