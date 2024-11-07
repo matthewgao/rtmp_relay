@@ -194,6 +194,7 @@ Asr::start() {
     // 设置是否在后处理中执行数字转写, 可选参数. 默认false
     m_request->setInverseTextNormalization(false);
     m_request->setEnableWords(true);
+    m_request->setIntermediateResult(true);
 
 
     int ret = m_request->start();

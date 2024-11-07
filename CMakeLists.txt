@@ -57,6 +57,8 @@ target_link_libraries(rtmp_relay
     ${AVCODEC_LIBRARY}
     ${AVUTIL_LIBRARY}
     ${SWR_LIBRARY}
+    z
+    fdk-aac
 )
 
 # target_link_libraries(rtmp_relay 
