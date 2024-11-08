@@ -124,11 +124,59 @@ Replacer::replaceAudioToMute(AVPacket *packet) {
         int ret = avcodec_receive_frame(m_audio_decoder_ctx, frame);
         if (ret >= 0) {
             int data_size = av_get_bytes_per_sample(m_audio_decoder_ctx->sample_fmt);
+
+            // static int64_t pcmlen = 0;
+            // uint8_t *pcmbuf = frame->data[0];
+            // double gainFactor = pow(10, -6/20.0);
+            // double totalPeriodW = 2*M_PI/(44100*1/1000);
+
+            
+
+            // char x[data_size*2] = {0};
+            // for (int s = 0; s <data_size; s++) {
+            //     pcmlen %= 220500;
+            //     double val = 100 * sin(pcmlen++ * totalPeriodW);
+            //     x[2*s] = x[2*s+1] = (short)(val * gainFactor);
+            //     av_log(NULL, AV_LOG_ERROR, "totalPeriodW %f %f %d\n", totalPeriodW, val, (short)(val * gainFactor));
+            // }
+
+            // for (int i = 0; i < frame->nb_samples; i++) {
+            //     for (int ch = 0; ch < m_audio_decoder_ctx->ch_layout.nb_channels; ch++) {
+            //         memcpy(frame->data[ch]+ data_size*i, x, data_size);
+            //     }
+            // }
+
+
             for (int i = 0; i < frame->nb_samples; i++) {
                 for (int ch = 0; ch < m_audio_decoder_ctx->ch_layout.nb_channels; ch++) {
                     memset(frame->data[ch]+ data_size*i, 0, data_size);
                 }
             }
+
+
+
+            // for (int i = 0; i < frame->nb_samples; i++) {
+            //     for (int ch = 0; ch < m_audio_decoder_ctx->ch_layout.nb_channels; ch++) {
+            //         for (int s = 0; s <data_size; s++) {
+            //         pcmlen %= 220500;
+            //         double val = 32767 * sin(pcmlen++ * totalPeriodW);
+            //         memset(frame->data[ch]+ i*data_size +s, (short)(val * gainFactor), 2);
+            //         }
+            //     }
+            // }
+
+            // static int64_t pcmlen = 0;
+            // int ch = 0;
+            // uint8_t *pcmbuf = frame->data[0];
+            // double gainFactor = pow(10, -6/20.0);
+            // double totalPeriodW = 2*M_PI/(44100*1/1000);
+            // memset(frame->data[ch], 0, data_size);
+            // for (int i=0; i<frame->nb_samples; i++) {
+            //     pcmlen %= 220500;
+            //     double val = 32767 * sin(pcmlen++ * totalPeriodW);
+            //     av_log(NULL, AV_LOG_WARNING, "val %d\n", (short)(val * gainFactor));
+            //     pcmbuf[2*i] = pcmbuf[2*i+1] = (short)(val * gainFactor);
+            // }
 
             break;
         }

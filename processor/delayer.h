@@ -17,21 +17,20 @@ extern "C" {
 
 using namespace std;
 
-
 class Delayer {
 public:
     Delayer(int deley_sec, AVFormatContext *output_format_context);
-    ~Delayer();
+    virtual ~Delayer();
 
     void pushVideoFrame(AVPacket *pkt);
     void pushAudioFrame(AVPacket *pkt);
     void replaceAudioPacket(int64_t start, int64_t end);
 
-    int getDelaySec(){
+    int getDelaySec() const {
         return this->m_deley_sec;
     }
 
-    void setReplacer(Replacer* r) {
+    void setReplacer(shared_ptr<Replacer> r) {
         m_replacer = r;
     }
 
@@ -45,6 +44,6 @@ private:
     int m_deley_sec;
     int m_total_deley_ms;
     AVFormatContext *m_output_format_context;
-    Replacer *m_replacer;
+    shared_ptr<Replacer> m_replacer;
     std::mutex m_mutex;
 };

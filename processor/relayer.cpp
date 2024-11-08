@@ -4,7 +4,7 @@
 #include "asr.h"
 #include <unistd.h>
 
-Relayer::Relayer(string in_url, string out_url):m_in_url(in_url), m_out_url(out_url) {
+Relayer::Relayer(const string& in_url, const string& out_url):m_in_url(in_url), m_out_url(out_url) {
 
 }
 
@@ -38,7 +38,7 @@ Relayer::init() {
     }
 
     // 复制视频流
-    for (int i = 0; i < m_input_format_context->nb_streams; i++) {
+    for (unsigned int i = 0; i < m_input_format_context->nb_streams; i++) {
         AVStream *in_stream = m_input_format_context->streams[i];
         AVStream *out_stream = avformat_new_stream(m_output_format_context, NULL);
         if (!out_stream) {
@@ -75,17 +75,17 @@ Relayer::init() {
         }
     }
 
-    m_delayer = new Delayer(15, m_output_format_context);
-    m_replacer = new Replacer();
+    m_replacer = make_shared<Replacer>();
     int ret = m_replacer->init(m_input_format_context);
     if (ret < 0) {
         av_log(NULL, AV_LOG_ERROR, "Could not open output URL %d\n", ret);
         return -1;
     }
 
+    m_delayer = make_shared<Delayer>(15, m_output_format_context);
     m_delayer->setReplacer(m_replacer);
 
-    m_asr = new Asr(m_akId, m_akSecret, m_appkey);
+    m_asr = make_shared<Asr>(m_akId, m_akSecret, m_appkey);
     m_asr->init();
     m_asr->setDelayer(m_delayer);
     m_asr->createAudioDecoder(m_input_format_context);
@@ -127,7 +127,7 @@ Relayer::startProcess() {
             m_asr->sendAudio(pkt);
             m_delayer->pushAudioFrame(pkt);
             //do not send too fast to asr, it will cause "Too many audio data in evbuffer"
-            if(audio_frame_count < 100) {
+            if(audio_frame_count < 200) {
                 // av_log(NULL, AV_LOG_INFO, "sleep 10ms\n");
                 usleep(10000);
             }
@@ -146,12 +146,12 @@ Relayer::startProcess() {
 }
 
 void 
-Relayer::setKey(string akId, string akSecret, string appkey) {
+Relayer::setKey(const string& akId, const string& akSecret, const string& appkey) {
     m_akId = akId;
     m_akSecret = akSecret;
     m_appkey = appkey;
 }
 
-void Relayer::setDictFile(string filename) {
+void Relayer::setDictFile(const string& filename) {
     m_dict_filename = filename;
 }

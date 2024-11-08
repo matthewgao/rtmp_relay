@@ -4,61 +4,6 @@
 #define OUTPUT_SAMPLE_RATE	16000
 #define OUTPUT_SAMPLE_FMT	AV_SAMPLE_FMT_S16
 
-void pcmresample_init(PcmResampleContext *pc) {
-	PcmParams pp;
-	pp.channel_layout = AV_CH_LAYOUT_MONO;
-	pp.sample_rate = 16000;
-	pp.sample_fmt = AV_SAMPLE_FMT_S16;
-
-	pc->swr_ctx = swr_alloc();
-	pc->src = pp;
-	pc->dst = pp;
-	pc->data = NULL;
-	pc->data_len = 0;
-	pc->max_nb_samples = 0;
-}
-
-void pcmresample_setparams(PcmResampleContext *pc, const PcmParams *src, const PcmParams *dst) 
-{
-	av_opt_set_int(pc->swr_ctx, "in_channel_layout", src->channel_layout, 0);
-	av_opt_set_int(pc->swr_ctx, "in_sample_rate", src->sample_rate, 0);
-	av_opt_set_sample_fmt(pc->swr_ctx, "in_sample_fmt", (AVSampleFormat)src->sample_fmt, 0);
-
-	av_opt_set_int(pc->swr_ctx, "out_channel_layout", dst->channel_layout, 0);
-	av_opt_set_int(pc->swr_ctx, "out_sample_rate", dst->sample_rate, 0);
-	av_opt_set_sample_fmt(pc->swr_ctx, "out_sample_fmt", (AVSampleFormat)dst->sample_fmt, 0);
-
-	swr_init(pc->swr_ctx);
-}
-
-void pcmresample_free(PcmResampleContext *pc) {
-	swr_free(&pc->swr_ctx);
-	av_freep(&pc->data);
-}
-
-int pcmresample_resample(PcmResampleContext *pc, const AVFrame *frame) {
-	int nb_samples = av_rescale_rnd(swr_get_delay(pc->swr_ctx, pc->src.sample_rate) + frame->nb_samples,
-        pc->dst.sample_rate, pc->src.sample_rate, AV_ROUND_UP);
-
-	int nb_channels = av_get_channel_layout_nb_channels(pc->dst.channel_layout);
-	if (nb_samples > pc->max_nb_samples) {
-		pc->max_nb_samples = nb_samples;
-		av_freep(&pc->data);
-		av_samples_alloc(&pc->data, NULL, nb_channels, nb_samples, (AVSampleFormat)pc->dst.sample_fmt, 1);
-	}
-
-	int ret = swr_convert(pc->swr_ctx, &pc->data, nb_samples,
-			(const uint8_t **) frame->data, frame->nb_samples);
-	if (ret < 0) {
-		return ret;
-	}
-
-	pc->data_len = av_samples_get_buffer_size(NULL,
-			nb_channels, ret, (AVSampleFormat)pc->dst.sample_fmt, 1);
-
-	return 0;
-}
-
 void onTranscriptionStarted(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
 	printf("onTranscriptionStarted code: %d task id: %s\n", cbEvent->getStatusCode(), cbEvent->getTaskId());
 }
@@ -72,12 +17,12 @@ void onChannelClosed(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
 }
 
 void onTranscriptionResultChanged(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
-	printf("onTranscriptionResultChanged code: %d result: %s, wordlist: %d\n", cbEvent->getStatusCode(), cbEvent->getResult(), 
+	printf("onTranscriptionResultChanged code: %d result: %s, wordlist: %ld\n", cbEvent->getStatusCode(), cbEvent->getResult(), 
         cbEvent->getSentenceWordsList().size());
 }
 
 void onTranscriptionCompleted(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
-	printf("onTranscriptionCompleted code: %d task id: %s  wordlist: %d\n", cbEvent->getStatusCode(), cbEvent->getResult(),
+	printf("onTranscriptionCompleted code: %d task id: %s  wordlist: %ld\n", cbEvent->getStatusCode(), cbEvent->getResult(),
         cbEvent->getSentenceWordsList().size());
 }
 
@@ -86,20 +31,12 @@ void onSentenceBegin(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
 }
 
 void onSentenceEnd(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
-	printf("onSentenceEnd status code: %d task id: %s wordlist: %d\n", cbEvent->getStatusCode(), cbEvent->getResult(), 
+	printf("onSentenceEnd status code: %d task id: %s wordlist: %ld\n", cbEvent->getStatusCode(), cbEvent->getResult(), 
         cbEvent->getSentenceWordsList().size());
 
     Asr* asr = (Asr*)cbParam;
     auto list = cbEvent->getSentenceWordsList();
     for (auto &item : list) {
-        // printf("%d %d %s | ", item.startTime, item.endTime, item.text.c_str());
-        // if (item.text.find("十一") != std::string::npos) {
-        //     int64_t base = asr->getTimeBase();
-        //     int64_t start_pts = base + item.startTime;
-        //     int64_t end_pts = base + item.endTime;
-        //     asr->getDelayer()->replaceAudioPacket(start_pts, end_pts);
-        // }
-
         if (asr->hitDict(item.text)) {
             printf("mute word %s", item.text.c_str());
             int64_t base = asr->getTimeBase();
@@ -108,17 +45,18 @@ void onSentenceEnd(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
             asr->getDelayer()->replaceAudioPacket(start_pts, end_pts);
         }
     }
-    printf("\n");
+    // printf("\n");
 }
 
 Asr::Asr(string akId, string akSecret, string m_appkey):m_akId(akId),m_akSecret(akSecret),m_appkey(m_appkey) {
-	pcmresample_init(&m_pr_ctx);
+	pcmResampleInit();
     m_first_audio_pts = 0;
 }
 
 Asr::~Asr() {
     AlibabaNls::NlsClient::releaseInstance();
     delete m_request;
+    pcmResampleFree();
 }
 
 void
@@ -127,6 +65,64 @@ Asr::init() {
     AlibabaNls::NlsClient::getInstance()->startWorkThread(3);
     AlibabaNls::NlsClient::getInstance()->setLogConfig(
             NULL, AlibabaNls::LogLevel::LogInfo, 100, 10);
+}
+
+void 
+Asr::pcmResampleInit() {
+	PcmParams pp;
+	pp.channel_layout = AV_CH_LAYOUT_MONO;
+	pp.sample_rate = 16000;
+	pp.sample_fmt = AV_SAMPLE_FMT_S16;
+
+	m_pr_ctx.swr_ctx = swr_alloc();
+	m_pr_ctx.src = pp;
+	m_pr_ctx.dst = pp;
+	m_pr_ctx.data = NULL;
+	m_pr_ctx.data_len = 0;
+	m_pr_ctx.max_nb_samples = 0;
+}
+
+void
+Asr::pcmResampleSetParams(const PcmParams *pcm_src, const PcmParams *pcm_dst) {
+	av_opt_set_int(m_pr_ctx.swr_ctx, "in_channel_layout", pcm_src->channel_layout, 0);
+	av_opt_set_int(m_pr_ctx.swr_ctx, "in_sample_rate", pcm_src->sample_rate, 0);
+	av_opt_set_sample_fmt(m_pr_ctx.swr_ctx, "in_sample_fmt", (AVSampleFormat)pcm_src->sample_fmt, 0);
+
+	av_opt_set_int(m_pr_ctx.swr_ctx, "out_channel_layout", pcm_dst->channel_layout, 0);
+	av_opt_set_int(m_pr_ctx.swr_ctx, "out_sample_rate", pcm_dst->sample_rate, 0);
+	av_opt_set_sample_fmt(m_pr_ctx.swr_ctx, "out_sample_fmt", (AVSampleFormat)pcm_dst->sample_fmt, 0);
+
+	swr_init(m_pr_ctx.swr_ctx);
+}
+
+void 
+Asr::pcmResampleFree() {
+	swr_free(&m_pr_ctx.swr_ctx);
+	av_freep(&m_pr_ctx.data);
+}
+
+int 
+Asr::pcmResample(const AVFrame *frame) {
+	int nb_samples = av_rescale_rnd(swr_get_delay(m_pr_ctx.swr_ctx, m_pr_ctx.src.sample_rate) + frame->nb_samples,
+        m_pr_ctx.dst.sample_rate, m_pr_ctx.src.sample_rate, AV_ROUND_UP);
+
+	int nb_channels = av_get_channel_layout_nb_channels(m_pr_ctx.dst.channel_layout);
+	if (nb_samples > m_pr_ctx.max_nb_samples) {
+		m_pr_ctx.max_nb_samples = nb_samples;
+		av_freep(&m_pr_ctx.data);
+		av_samples_alloc(&m_pr_ctx.data, NULL, nb_channels, nb_samples, (AVSampleFormat)m_pr_ctx.dst.sample_fmt, 1);
+	}
+
+	int ret = swr_convert(m_pr_ctx.swr_ctx, &m_pr_ctx.data, nb_samples,
+			(const uint8_t **) frame->data, frame->nb_samples);
+	if (ret < 0) {
+		return ret;
+	}
+
+	m_pr_ctx.data_len = av_samples_get_buffer_size(NULL,
+			nb_channels, ret, (AVSampleFormat)m_pr_ctx.dst.sample_fmt, 1);
+
+	return 0;
 }
 
 int 
@@ -147,6 +143,7 @@ Asr::checkToken() {
             }
         }
     }
+    return 0;
 }
 
 int 
@@ -155,7 +152,7 @@ Asr::generateToken() {
     nlsTokenRequest.setAccessKeyId(m_akId);
     nlsTokenRequest.setKeySecret(m_akSecret);
     int retCode = nlsTokenRequest.applyNlsToken();
-    /*获取失败原因*/
+
     if (retCode < 0) {
         std::cout << "Failed error code: " << retCode
                 << "  error msg: " << nlsTokenRequest.getErrorMsg() << std::endl;
@@ -208,7 +205,7 @@ Asr::start() {
     m_request->setToken(m_token.c_str());
     m_request->setUrl("wss://nls-gateway.cn-shanghai.aliyuncs.com/ws/v1");
 
-  // 设置音频数据采样率, 可选参数，目前支持16000, 8000. 默认是16000
+    // 设置音频数据采样率, 可选参数，目前支持16000, 8000. 默认是16000
     m_request->setSampleRate(16000);
     // 设置是否返回中间识别结果, 可选参数. 默认false
     m_request->setIntermediateResult(false);
@@ -239,8 +236,6 @@ Asr::createAudioDecoder(AVFormatContext* input_format_context) {
     }
 
     m_audio_decoder = const_cast<AVCodec *>(temp_decoder);
-
-    // Create a codec context for the m_audio_decoder
     m_audio_decoder_ctx = avcodec_alloc_context3(m_audio_decoder);
     if (!m_audio_decoder_ctx) {
         av_log(NULL, AV_LOG_ERROR, "Could not allocate a decoding context\n");
@@ -268,7 +263,7 @@ Asr::createAudioDecoder(AVFormatContext* input_format_context) {
     pcm_dst.channel_layout = OUTPUT_CH_LAYOUT;
     pcm_dst.sample_rate = OUTPUT_SAMPLE_RATE;
     pcm_dst.sample_fmt = OUTPUT_SAMPLE_FMT;
-    pcmresample_setparams(&m_pr_ctx, &pcm_src, &pcm_dst);
+    pcmResampleSetParams(&pcm_src, &pcm_dst);
 
     return 0;
 }
@@ -299,9 +294,10 @@ Asr::sendAudio(AVPacket *pkt) {
     while(true) {
         int ret = avcodec_receive_frame(m_audio_decoder_ctx, frame);
         if (ret >= 0) {
-            ret = pcmresample_resample(&m_pr_ctx, frame);
+            ret = pcmResample(frame);
             if (ret < 0) {
-                av_log(NULL, AV_LOG_ERROR, "pcmresample_resample failed\n");
+                av_log(NULL, AV_LOG_ERROR, "pcmResample failed\n");
+                break;
             }
 
             int sent_byte = m_request->sendAudio(m_pr_ctx.data, m_pr_ctx.data_len, ENCODER_OPUS);
@@ -333,12 +329,14 @@ Asr::sendAudio(AVPacket *pkt) {
 
     av_frame_unref(frame);
     av_frame_free(&frame);
+    return 0;
 }
 
 
 int 
 Asr::createBlackListDict(string file) {
     m_dict.init(file);
+    return 0;
 }
 
 bool 

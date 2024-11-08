@@ -3,6 +3,7 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavutil/log.h>
 #include <libavutil/opt.h>
+#include <libavutil/time.h>
 }
 #include "processor/relayer.h"
 
@@ -67,6 +68,21 @@ parse_argv(int argc, char *argv[]) {
     return 0;
 }
 
+void my_log_callback(void* ptr, int level, const char* fmt, va_list vl) {
+    if (level > av_log_get_level()) {
+        return; // 如果当前级别大于设置的级别，返回
+    }
+
+    // 获取当前时间戳
+    int64_t currentTime = av_gettime(); // 获取当前时间（微秒）
+    // 转换为秒
+    double seconds = currentTime / 1000000.0;
+
+    // 输出时间戳和日志信息
+    fprintf(stderr, "[%f] ", seconds); // 打印时间戳
+    vfprintf(stderr, fmt, vl); // 打印日志信息
+}
+
 int main(int argc, char *argv[]) {
     if (parse_argv(argc, argv) != 0) {
         av_log(NULL, AV_LOG_ERROR, "wrong params\n");
@@ -90,6 +106,13 @@ int main(int argc, char *argv[]) {
     av_log(NULL, AV_LOG_INFO, "dict [%s]\n", g_dict_file.c_str());
 
     avformat_network_init();
+
+    // 设置自定义的日志回调
+    av_log_set_callback(my_log_callback);
+
+    // 设置日志级别（可根据需求调整）
+    av_log_set_level(AV_LOG_INFO);
+
 
     Relayer relayer(g_in_url.c_str(), g_out_url.c_str());
     relayer.setKey(g_akId, g_akSecret, g_appkey);

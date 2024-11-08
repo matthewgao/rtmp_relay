@@ -55,7 +55,7 @@ pcmresample_resample(PcmResampleContext *pc, const AVFrame *frame);
 class Asr {
 public:
     Asr(string akId, string akSecret, string m_appkey);
-    ~Asr();
+    virtual ~Asr();
 
     void init();
     int start();
@@ -70,19 +70,24 @@ public:
     Asr (const Asr&) = delete;
     Asr& operator= (const Asr&) = delete;
 
-    int64_t getTimeBase(){
+    int64_t getTimeBase() const {
         return m_first_audio_pts;
     }
 
-    void setDelayer(Delayer* r) {
+    void setDelayer(shared_ptr<Delayer> r) {
         m_delayer = r;
     }
 
-    Delayer* getDelayer() {
+    shared_ptr<Delayer> getDelayer() const {
         return m_delayer;
     }
 
 private:
+    void pcmResampleInit();
+    void pcmResampleSetParams(const PcmParams *pcm_src, const PcmParams *pcm_dst);
+    void pcmResampleFree();
+    int pcmResample(const AVFrame *frame);
+
     string m_appkey;
     string m_token;
     string m_akId;
@@ -94,6 +99,6 @@ private:
     AVCodecContext *m_audio_decoder_ctx;
     int m_audio_stream_index;
     int64_t m_first_audio_pts;
-    Delayer* m_delayer;
+    shared_ptr<Delayer> m_delayer;
     Dictionary m_dict;
 };

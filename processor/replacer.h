@@ -18,13 +18,13 @@ using namespace std;
 class Replacer {
 public:
     Replacer();
-    ~Replacer();
+    virtual ~Replacer();
     int init(AVFormatContext* input_format_context);
     AVPacket* replaceAudioToMute(AVPacket *pkt);
     int createAudioDecoder(AVFormatContext* input_format_context);
     int createAudioEncoder();
 
-    int getAudioIndex() {
+    int getAudioIndex() const {
         return m_audio_stream_index;
     }
 

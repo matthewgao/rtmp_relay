@@ -6,7 +6,9 @@ Delayer::Delayer(int deley_sec, AVFormatContext *output_format_context):m_deley_
 }
 
 Delayer::~Delayer() {
-
+    for (auto &p : m_av_packet) {
+        av_packet_free(&p);
+    }
 }
 
 void 
@@ -47,7 +49,7 @@ Delayer::flush() {
 void 
 Delayer::replaceAudioPacket(int64_t start, int64_t end) {
     std::lock_guard<std::mutex> guard(m_mutex);
-    av_log(NULL, AV_LOG_ERROR, "mute the packet from pts %d to %d\n", start, end);
+    av_log(NULL, AV_LOG_ERROR, "mute the packet from pts %ld to %ld\n", start, end);
     for (auto &p : m_av_packet) {
         if (p->stream_index != m_replacer->getAudioIndex()) {
             continue;

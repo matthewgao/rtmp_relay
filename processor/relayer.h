@@ -21,13 +21,13 @@ class Replacer;
 
 class Relayer {
 public:
-    Relayer(string in_url, string out_url);
-    ~Relayer();
+    Relayer(const string& in_url, const string& out_url);
+    virtual ~Relayer();
 
     int init();
     void startProcess();
-    void setKey(string akId, string akSecret, string appkey);
-    void setDictFile(string filename);
+    void setKey(const string& akId, const string& akSecret, const string& appkey);
+    void setDictFile(const string& filename);
 
     Relayer (const Relayer&) = delete;
     Relayer& operator= (const Relayer&) = delete;
@@ -43,7 +43,7 @@ private:
     int m_audio_stream_index;
     int m_video_stream_index;
     string m_dict_filename;
-    Delayer *m_delayer = nullptr;
-    Asr *m_asr = nullptr;
-    Replacer *m_replacer = nullptr;
+    shared_ptr<Delayer> m_delayer = nullptr;
+    shared_ptr<Asr> m_asr = nullptr;
+    shared_ptr<Replacer> m_replacer = nullptr;
 };
