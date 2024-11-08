@@ -92,8 +92,16 @@ void onSentenceEnd(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
     Asr* asr = (Asr*)cbParam;
     auto list = cbEvent->getSentenceWordsList();
     for (auto &item : list) {
-        printf("%d %d %s | ", item.startTime, item.endTime, item.text.c_str());
-        if (item.text.find("十一") != std::string::npos) {
+        // printf("%d %d %s | ", item.startTime, item.endTime, item.text.c_str());
+        // if (item.text.find("十一") != std::string::npos) {
+        //     int64_t base = asr->getTimeBase();
+        //     int64_t start_pts = base + item.startTime;
+        //     int64_t end_pts = base + item.endTime;
+        //     asr->getDelayer()->replaceAudioPacket(start_pts, end_pts);
+        // }
+
+        if (asr->hitDict(item.text)) {
+            printf("mute word %s", item.text.c_str());
             int64_t base = asr->getTimeBase();
             int64_t start_pts = base + item.startTime;
             int64_t end_pts = base + item.endTime;
@@ -116,7 +124,7 @@ Asr::~Asr() {
 void
 Asr::init() {
     AlibabaNls::NlsClient::getInstance()->setSyncCallTimeout(10*1000);
-    AlibabaNls::NlsClient::getInstance()->startWorkThread(1);
+    AlibabaNls::NlsClient::getInstance()->startWorkThread(3);
     AlibabaNls::NlsClient::getInstance()->setLogConfig(
             NULL, AlibabaNls::LogLevel::LogInfo, 100, 10);
 }
@@ -162,14 +170,12 @@ Asr::generateToken() {
 
 int
 Asr::start() {
-    checkToken();
-    // pthread_t tid;
+    generateToken();
+
     m_request =
         AlibabaNls::NlsClient::getInstance()->createTranscriberRequest("cpp", true);
     if (m_request == NULL) {
         std::cout << "SpeechTranscriberRequest failed." << std::endl;
-        // delete cbParam;
-        // cbParam = NULL;
         return -1;
     }
     /*
@@ -213,11 +219,11 @@ Asr::start() {
     m_request->setEnableWords(true);
     // m_request->setIntermediateResult(true);
 
-
     int ret = m_request->start();
     if (ret < 0) {
+        //seems like sdk bug, ret < 0 is not failed actucally 
         printf("start asr failed, ret=%d\n", ret);
-        return ret;
+        // return ret;
     }
 
     return 0;
@@ -270,10 +276,6 @@ Asr::createAudioDecoder(AVFormatContext* input_format_context) {
 int 
 Asr::sendAudio(AVPacket *pkt) {
     checkToken();
-
-    // if (m_first_audio_pts == 0) {
-    //     m_first_audio_pts = pkt->pts;
-    // }
 
     while(true) {
         int ret = avcodec_send_packet(m_audio_decoder_ctx, pkt);
@@ -329,8 +331,17 @@ Asr::sendAudio(AVPacket *pkt) {
         }
     }
 
-    
-
     av_frame_unref(frame);
     av_frame_free(&frame);
+}
+
+
+int 
+Asr::createBlackListDict(string file) {
+    m_dict.init(file);
+}
+
+bool 
+Asr::hitDict(string& word) {
+    return m_dict.exists(word);
 }

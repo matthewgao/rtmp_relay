@@ -22,6 +22,7 @@ add_definitions("-Wall")
 
 
 add_subdirectory(processor)
+add_subdirectory(censor)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -static-libasan -fno-omit-frame-pointer  -g")
 #set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fsanitize=address -static-libasan ")
 aux_source_directory(. DIR_SRCS)
@@ -40,6 +41,7 @@ if (UNIX)
 endif (UNIX)
 
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/processor")
+include_directories("${CMAKE_CURRENT_BINARY_DIR}/censor")
 include_directories(.)
 
 find_library(AVFORMAT_LIBRARY NAMES avformat PATHS ${FFMPEG_LIBRARY_DIR})

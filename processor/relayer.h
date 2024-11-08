@@ -15,6 +15,10 @@ extern "C" {
 
 using namespace std;
 
+class Delayer;
+class Asr;
+class Replacer;
+
 class Relayer {
 public:
     Relayer(string in_url, string out_url);
@@ -23,6 +27,7 @@ public:
     int init();
     void startProcess();
     void setKey(string akId, string akSecret, string appkey);
+    void setDictFile(string filename);
 
     Relayer (const Relayer&) = delete;
     Relayer& operator= (const Relayer&) = delete;
@@ -37,4 +42,8 @@ private:
     string m_akSecret;
     int m_audio_stream_index;
     int m_video_stream_index;
+    string m_dict_filename;
+    Delayer *m_delayer = nullptr;
+    Asr *m_asr = nullptr;
+    Replacer *m_replacer = nullptr;
 };

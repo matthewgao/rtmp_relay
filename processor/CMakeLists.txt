@@ -15,8 +15,6 @@ set(FFMPEG_LIBRARY_DIR "/usr/local/Cellar/ffmpeg/6.1.1_7/lib")
 set(ASR_INCLUDE_DIR "./../alibabacloud-nls-cpp-sdk/build/install/NlsSdk3.X_LINUX/include")
 set(ASR_LIBRARY_DIR "./../alibabacloud-nls-cpp-sdk/build/install/NlsSdk3.X_LINUX/lib") 
 
-
-
 include_directories(${FFMPEG_INCLUDE_DIR})
 include_directories(${ASR_INCLUDE_DIR})
 link_directories(${FFMPEG_LIBRARY_DIR})
@@ -45,6 +43,7 @@ target_link_libraries(processor
     ${AVUTIL_LIBRARY}
     ${ASR_LIBRARY}
     ${SWR_LIBRARY}
+    censor
 )
 
 # target_link_libraries(processor 

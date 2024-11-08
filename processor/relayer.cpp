@@ -2,6 +2,7 @@
 #include "delayer.h"
 #include "replacer.h"
 #include "asr.h"
+#include <unistd.h>
 
 Relayer::Relayer(string in_url, string out_url):m_in_url(in_url), m_out_url(out_url) {
 
@@ -73,6 +74,29 @@ Relayer::init() {
             return -1;
         }
     }
+
+    m_delayer = new Delayer(15, m_output_format_context);
+    m_replacer = new Replacer();
+    int ret = m_replacer->init(m_input_format_context);
+    if (ret < 0) {
+        av_log(NULL, AV_LOG_ERROR, "Could not open output URL %d\n", ret);
+        return -1;
+    }
+
+    m_delayer->setReplacer(m_replacer);
+
+    m_asr = new Asr(m_akId, m_akSecret, m_appkey);
+    m_asr->init();
+    m_asr->setDelayer(m_delayer);
+    m_asr->createAudioDecoder(m_input_format_context);
+    m_asr->createBlackListDict(m_dict_filename);
+    ret = m_asr->start(); 
+    if (ret < 0) {
+        av_log(NULL, AV_LOG_ERROR, "Could not open asr %d\n", ret);
+        return -1;
+    }
+
+    return 0;
 }
 
 void 
@@ -84,26 +108,7 @@ Relayer::startProcess() {
     }
 
     int audio_frame_count = 0;
-    Delayer *delayer = new Delayer(15, m_output_format_context);
-    Replacer *replacer = new Replacer();
-    ret = replacer->init(m_input_format_context);
-    if (ret < 0) {
-        av_log(NULL, AV_LOG_ERROR, "Could not open output URL %d\n", ret);
-        return;
-    }
-
-    delayer->setReplacer(replacer);
-
-    Asr *asr = new Asr(m_akId, m_akSecret, m_appkey);
-    asr->init();
-    asr->setDelayer(delayer);
-    asr->createAudioDecoder(m_input_format_context);
-    ret = asr->start(); 
-    if (ret < 0) {
-        av_log(NULL, AV_LOG_ERROR, "Could not open asr %d\n", ret);
-        return;
-    }
-
+    av_log(NULL, AV_LOG_ERROR, "start to process\n");
     while (1) {
         AVPacket *pkt = av_packet_alloc();
         if (av_read_frame(m_input_format_context, pkt) < 0) {
@@ -114,28 +119,23 @@ Relayer::startProcess() {
         // 检查流类型
         if (pkt->stream_index == 0) { // 假设视频流在索引 0
             // av_log(NULL, AV_LOG_INFO, "size %d, duration %lld pts %lld\n", pkt->size, pkt->duration, pkt->pts);
-            delayer->pushVideoFrame(pkt);
+            m_delayer->pushVideoFrame(pkt);
         } else if (pkt->stream_index == 1) { // 假设音频流在索引 1
             audio_frame_count++;
-            // if (audio_frame_count % AUDIO_DISCARD_INTERVAL != 0) {
-            //     for (size_t i = 1; i < pkt->size; i++)
-            //     {
-            //         pkt->data[i] = 0;
-            //     }
-                // av_log(NULL, AV_LOG_INFO, "size %d, duration %lld pts %lld\n", pkt->size, pkt->duration, pkt->pts);
-                // av_interleaved_write_frame(m_output_format_context, pkt);
 
-                // av_log(NULL, AV_LOG_INFO, "drop %d\n", audio_frame_count);
-                
-            // }
-            // av_packet_unref(&pkt);
-            asr->sendAudio(pkt);
-            delayer->pushAudioFrame(pkt);
+            // av_log(NULL, AV_LOG_INFO, "size %d, duration %lld pts %lld\n", pkt->size, pkt->duration, pkt->pts);
+            m_asr->sendAudio(pkt);
+            m_delayer->pushAudioFrame(pkt);
+            //do not send too fast to asr, it will cause "Too many audio data in evbuffer"
+            if(audio_frame_count < 100) {
+                // av_log(NULL, AV_LOG_INFO, "sleep 10ms\n");
+                usleep(10000);
+            }
             // if ((audio_frame_count/100) % 2 == 1){
             //     AVPacket* tmp = replacer->replaceAudioToMute(pkt);
-            //     delayer->pushAudioFrame(tmp);
+            //     m_delayer->pushAudioFrame(tmp);
             // } else {
-            //     delayer->pushAudioFrame(pkt);
+            //     m_delayer->pushAudioFrame(pkt);
             // }
 
         } else {
@@ -150,4 +150,8 @@ Relayer::setKey(string akId, string akSecret, string appkey) {
     m_akId = akId;
     m_akSecret = akSecret;
     m_appkey = appkey;
+}
+
+void Relayer::setDictFile(string filename) {
+    m_dict_filename = filename;
 }

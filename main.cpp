@@ -12,6 +12,7 @@ std::string g_akSecret = "";
 std::string g_token = "";
 std::string g_in_url = "";
 std::string g_out_url = "";
+std::string g_dict_file = "";
 
 int 
 invalied_argv(int index, int argc) {
@@ -51,6 +52,10 @@ parse_argv(int argc, char *argv[]) {
             index++;
             if (invalied_argv(index, argc)) return 1;
             g_out_url = argv[index];
+        } else if (!strcmp(argv[index], "--dict")) {
+            index++;
+            if (invalied_argv(index, argc)) return 1;
+            g_dict_file = argv[index];
         }
         index++;
     }
@@ -74,6 +79,7 @@ int main(int argc, char *argv[]) {
         << "  --token <Token>\n"
         << "  --in <rtmp addr>\n"
         << "  --out <rtmp addr>\n"
+        << "  --dict dictionary.txt\n"
         << "eg:\n"
         << "  ./rtmp_relay --in xxxxxx --out xxxxxx\n"
         << std::endl;
@@ -81,11 +87,13 @@ int main(int argc, char *argv[]) {
     }
 
     av_log(NULL, AV_LOG_INFO, "from [%s] to [%s]\n", g_in_url.c_str(), g_out_url.c_str());
+    av_log(NULL, AV_LOG_INFO, "dict [%s]\n", g_dict_file.c_str());
 
     avformat_network_init();
 
     Relayer relayer(g_in_url.c_str(), g_out_url.c_str());
     relayer.setKey(g_akId, g_akSecret, g_appkey);
+    relayer.setDictFile(g_dict_file);
     int ret = relayer.init();
     if (ret < 0) {
         av_log(NULL, AV_LOG_ERROR, "relayer init fail %d\n", ret);

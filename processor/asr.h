@@ -21,6 +21,7 @@ extern "C" {
 #include "nlsToken.h"
 #include "speechTranscriberRequest.h"
 #include "delayer.h"
+#include "../censor/dictionary.h"
 
 using namespace std;
 
@@ -63,6 +64,8 @@ public:
     int generateToken();
     int sendAudio(AVPacket *pkt);
     int createAudioDecoder(AVFormatContext* input_format_context);
+    int createBlackListDict(string file);
+    bool hitDict(string& word);
 
     Asr (const Asr&) = delete;
     Asr& operator= (const Asr&) = delete;
@@ -92,4 +95,5 @@ private:
     int m_audio_stream_index;
     int64_t m_first_audio_pts;
     Delayer* m_delayer;
+    Dictionary m_dict;
 };
