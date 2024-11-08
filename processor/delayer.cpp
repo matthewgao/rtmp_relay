@@ -55,7 +55,7 @@ Delayer::replaceAudioPacket(int64_t start, int64_t end) {
             continue;
         }
 
-        if (p->pts > start && p->pts < end) {
+        if (p->pts >= start && p->pts <= end) {
             AVPacket* out = m_replacer->replaceAudioToMute(p);
             p = out;
         }
