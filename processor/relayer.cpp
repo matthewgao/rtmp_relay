@@ -101,11 +101,11 @@ Relayer::init() {
 
 void 
 Relayer::startProcess() {
-    int ret = avformat_write_header(m_output_format_context, NULL);
-    if (ret < 0) {
-        av_log(NULL, AV_LOG_ERROR, "fail to writer format header %d\n", ret);
-        return;
-    }
+    // int ret = avformat_write_header(m_output_format_context, NULL);
+    // if (ret < 0) {
+    //     av_log(NULL, AV_LOG_ERROR, "fail to writer format header %d\n", ret);
+    //     return;
+    // }
 
     int audio_frame_count = 0;
     av_log(NULL, AV_LOG_ERROR, "start to process\n");

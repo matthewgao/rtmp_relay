@@ -46,4 +46,5 @@ private:
     AVFormatContext *m_output_format_context;
     shared_ptr<Replacer> m_replacer;
     std::mutex m_mutex;
+    bool m_handshake_done;
 };

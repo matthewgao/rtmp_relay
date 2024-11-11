@@ -120,6 +120,7 @@ int main(int argc, char *argv[]) {
     int ret = relayer.init();
     if (ret < 0) {
         av_log(NULL, AV_LOG_ERROR, "relayer init fail %d\n", ret);
+        return -1;
     }
     
     relayer.startProcess();

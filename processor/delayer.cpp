@@ -2,6 +2,7 @@
 
 Delayer::Delayer(int deley_sec, AVFormatContext *output_format_context):m_deley_sec(deley_sec),m_output_format_context(output_format_context){
     m_total_deley_ms = 0;
+    m_handshake_done = false;
     // this->m_av_packet = make_shared<list<AVPacket*> >();
 }
 
@@ -34,6 +35,16 @@ Delayer::flush() {
             // printf("flush m_total_deley_ms=%d, size=%d\n", m_total_deley_ms, m_av_packet->size());
             AVPacket *p = m_av_packet.front();
             if (m_total_deley_ms - p->duration > m_deley_sec*1000*2) {
+                if (m_handshake_done == false) {
+                    int ret = avformat_write_header(m_output_format_context, NULL);
+                    if (ret < 0) {
+                        av_log(NULL, AV_LOG_ERROR, "output handshake failed %d\n", ret);
+                        exit(-1);
+                    }
+                    av_log(NULL, AV_LOG_INFO, "output handshake done, start to push output %d\n", ret);
+                    m_handshake_done = true;
+                }
+
                 m_av_packet.pop_front();
                 m_total_deley_ms -= p->duration;
                 av_interleaved_write_frame(m_output_format_context, p);
