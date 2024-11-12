@@ -70,20 +70,21 @@ void
 Delayer::replaceAudioPacket(int64_t start, int64_t end) {
     std::lock_guard<std::mutex> guard(m_mutex);
     av_log(NULL, AV_LOG_ERROR, "try mute the packet from pts %ld to %ld\n", start, end);
+    bool hit = false;
     for (auto &p : m_av_packet) {
         if (p->stream_index != m_replacer->getAudioIndex()) {
             continue;
         }
 
-        bool hit = false;
+        
         if (p->pts >= (start - 200) && p->pts <= (end)) {
             AVPacket* out = m_replacer->replaceAudioToMute(p);
             p = out;
             hit = true;
         }
+    }
 
-        if (hit) {
-            av_log(NULL, AV_LOG_ERROR, "muted the packet from pts %ld to %ld\n", start, end);
-        }
+    if (hit) {
+        av_log(NULL, AV_LOG_ERROR, "muted the packet from pts %ld to %ld\n", start, end);
     }
 }
