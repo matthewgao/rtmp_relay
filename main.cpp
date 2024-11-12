@@ -14,6 +14,7 @@ std::string g_token = "";
 std::string g_in_url = "";
 std::string g_out_url = "";
 std::string g_dict_file = "";
+int g_delay = 10;
 
 int 
 invalied_argv(int index, int argc) {
@@ -57,6 +58,10 @@ parse_argv(int argc, char *argv[]) {
             index++;
             if (invalied_argv(index, argc)) return 1;
             g_dict_file = argv[index];
+        } else if (!strcmp(argv[index], "--delay")) {
+            index++;
+            if (invalied_argv(index, argc)) return 1;
+            g_delay = atoi(argv[index]);
         }
         index++;
     }
@@ -96,6 +101,7 @@ int main(int argc, char *argv[]) {
         << "  --in <rtmp addr>\n"
         << "  --out <rtmp addr>\n"
         << "  --dict dictionary.txt\n"
+        << "  --delay 10\n"
         << "eg:\n"
         << "  ./rtmp_relay --in xxxxxx --out xxxxxx\n"
         << std::endl;
@@ -108,7 +114,7 @@ int main(int argc, char *argv[]) {
     avformat_network_init();
 
     // 设置自定义的日志回调
-    av_log_set_callback(my_log_callback);
+    // av_log_set_callback(my_log_callback);
 
     // 设置日志级别（可根据需求调整）
     av_log_set_level(AV_LOG_INFO);
@@ -117,6 +123,7 @@ int main(int argc, char *argv[]) {
     Relayer relayer(g_in_url.c_str(), g_out_url.c_str());
     relayer.setKey(g_akId, g_akSecret, g_appkey);
     relayer.setDictFile(g_dict_file);
+    relayer.setDelaySec(g_delay);
     int ret = relayer.init();
     if (ret < 0) {
         av_log(NULL, AV_LOG_ERROR, "relayer init fail %d\n", ret);

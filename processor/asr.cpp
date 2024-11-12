@@ -214,7 +214,7 @@ Asr::start() {
     // 设置是否在后处理中执行数字转写, 可选参数. 默认false
     m_request->setInverseTextNormalization(false);
     m_request->setEnableWords(true);
-    // m_request->setIntermediateResult(true);
+    m_request->setSemanticSentenceDetection(false);
 
     int ret = m_request->start();
     if (ret < 0) {
@@ -302,6 +302,7 @@ Asr::sendAudio(AVPacket *pkt) {
 
             int sent_byte = m_request->sendAudio(m_pr_ctx.data, m_pr_ctx.data_len, ENCODER_OPUS);
             if (m_first_audio_pts == 0 && sent_byte > 0) {
+                av_log(NULL, AV_LOG_INFO, "set first pts to %d\n", pkt->pts);
                 m_first_audio_pts = pkt->pts;
             }
 

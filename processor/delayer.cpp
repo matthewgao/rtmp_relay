@@ -69,13 +69,14 @@ Delayer::flush() {
 void 
 Delayer::replaceAudioPacket(int64_t start, int64_t end) {
     std::lock_guard<std::mutex> guard(m_mutex);
-    av_log(NULL, AV_LOG_ERROR, "mute the packet from pts %ld to %ld\n", start, end);
+    av_log(NULL, AV_LOG_ERROR, "try mute the packet from pts %ld to %ld\n", start, end);
     for (auto &p : m_av_packet) {
         if (p->stream_index != m_replacer->getAudioIndex()) {
             continue;
         }
 
-        if (p->pts >= start && p->pts <= end) {
+        if (p->pts >= (start - 200) && p->pts <= (end + 200)) {
+            av_log(NULL, AV_LOG_ERROR, "muted the packet from pts %ld to %ld\n", start, end);
             AVPacket* out = m_replacer->replaceAudioToMute(p);
             p = out;
         }

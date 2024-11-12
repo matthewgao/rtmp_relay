@@ -28,6 +28,9 @@ public:
     void startProcess();
     void setKey(const string& akId, const string& akSecret, const string& appkey);
     void setDictFile(const string& filename);
+    void setDelaySec(int delay) {
+        m_delay_sec = delay;
+    }
 
     Relayer (const Relayer&) = delete;
     Relayer& operator= (const Relayer&) = delete;
@@ -46,4 +49,5 @@ private:
     shared_ptr<Delayer> m_delayer = nullptr;
     shared_ptr<Asr> m_asr = nullptr;
     shared_ptr<Replacer> m_replacer = nullptr;
+    int m_delay_sec;
 };

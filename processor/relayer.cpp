@@ -82,7 +82,8 @@ Relayer::init() {
         return -1;
     }
 
-    m_delayer = make_shared<Delayer>(15, m_output_format_context);
+    av_log(NULL, AV_LOG_INFO, "delay %d\n", m_delay_sec);
+    m_delayer = make_shared<Delayer>(m_delay_sec, m_output_format_context);
     m_delayer->setReplacer(m_replacer);
     m_delayer->setOutputUrl(m_out_url);
 
@@ -119,7 +120,7 @@ Relayer::startProcess() {
 
         // 检查流类型
         if (pkt->stream_index == 0) { // 假设视频流在索引 0
-            // av_log(NULL, AV_LOG_INFO, "size %d, duration %lld pts %lld\n", pkt->size, pkt->duration, pkt->pts);
+            // av_log(NULL, AV_LOG_INFO, "video size %d, duration %lld pts %lld\n", pkt->size, pkt->duration, pkt->pts);
             m_delayer->pushVideoFrame(pkt);
         } else if (pkt->stream_index == 1) { // 假设音频流在索引 1
             audio_frame_count++;
