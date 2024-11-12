@@ -37,6 +37,7 @@ void onSentenceEnd(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
     Asr* asr = (Asr*)cbParam;
     auto list = cbEvent->getSentenceWordsList();
     for (auto &item : list) {
+        printf(" %s |", item.text.c_str());
         if (asr->hitDict(item.text)) {
             printf("mute word %s", item.text.c_str());
             int64_t base = asr->getTimeBase();
@@ -45,7 +46,7 @@ void onSentenceEnd(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
             asr->getDelayer()->replaceAudioPacket(start_pts, end_pts);
         }
     }
-    // printf("\n");
+    printf("\n");
 }
 
 Asr::Asr(string akId, string akSecret, string m_appkey):m_akId(akId),m_akSecret(akSecret),m_appkey(m_appkey) {
