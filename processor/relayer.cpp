@@ -84,6 +84,7 @@ Relayer::init() {
 
     m_delayer = make_shared<Delayer>(15, m_output_format_context);
     m_delayer->setReplacer(m_replacer);
+    m_delayer->setOutputUrl(m_out_url);
 
     m_asr = make_shared<Asr>(m_akId, m_akSecret, m_appkey);
     m_asr->init();

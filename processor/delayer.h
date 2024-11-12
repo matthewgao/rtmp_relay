@@ -34,6 +34,10 @@ public:
         m_replacer = r;
     }
 
+    void setOutputUrl(string out) {
+        m_out_url = out;
+    }
+
     Delayer (const Delayer&) = delete;
     Delayer& operator= (const Delayer&) = delete;
 
@@ -47,4 +51,5 @@ private:
     shared_ptr<Replacer> m_replacer;
     std::mutex m_mutex;
     bool m_handshake_done;
+    string m_out_url;
 };

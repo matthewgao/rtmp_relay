@@ -32,19 +32,28 @@ void
 Delayer::flush() {
     if (m_total_deley_ms > m_deley_sec*1000*2) {
         while(true) {
-            // printf("flush m_total_deley_ms=%d, size=%d\n", m_total_deley_ms, m_av_packet->size());
+            
             AVPacket *p = m_av_packet.front();
+            // printf("flush m_total_deley_ms=%d, size=%d\n", m_total_deley_ms, m_av_packet.size());
             if (m_total_deley_ms - p->duration > m_deley_sec*1000*2) {
                 if (m_handshake_done == false) {
+                    if (!(m_output_format_context->oformat->flags & AVFMT_NOFILE)) {
+                        if (avio_open(&m_output_format_context->pb, m_out_url.c_str(), AVIO_FLAG_WRITE) < 0) {
+                            av_log(NULL, AV_LOG_ERROR, "Could not open output URL\n");
+                            exit(-1);
+                        }
+                    }
+
                     int ret = avformat_write_header(m_output_format_context, NULL);
                     if (ret < 0) {
                         av_log(NULL, AV_LOG_ERROR, "output handshake failed %d\n", ret);
                         exit(-1);
                     }
+
                     av_log(NULL, AV_LOG_INFO, "output handshake done, start to push output %d\n", ret);
                     m_handshake_done = true;
                 }
-
+                // printf("sent flush m_total_deley_ms=%d, size=%d\n", m_total_deley_ms, m_av_packet.size());
                 m_av_packet.pop_front();
                 m_total_deley_ms -= p->duration;
                 av_interleaved_write_frame(m_output_format_context, p);
