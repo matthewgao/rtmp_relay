@@ -216,6 +216,7 @@ Asr::start() {
     m_request->setInverseTextNormalization(false);
     m_request->setEnableWords(true);
     m_request->setSemanticSentenceDetection(false);
+    m_request->setMaxSentenceSilence(200);
 
     int ret = m_request->start();
     if (ret < 0) {

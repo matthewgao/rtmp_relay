@@ -14,7 +14,7 @@ std::string g_token = "";
 std::string g_in_url = "";
 std::string g_out_url = "";
 std::string g_dict_file = "";
-int g_delay = 10;
+int g_delay = 15;
 
 int 
 invalied_argv(int index, int argc) {
