@@ -68,12 +68,12 @@ Relayer::init() {
     av_log(NULL, AV_LOG_INFO, "m_video_stream_index=%d, m_audio_stream_index=%d\n", m_video_stream_index, m_audio_stream_index);
 
     // 打开输出流
-    if (!(m_output_format_context->oformat->flags & AVFMT_NOFILE)) {
-        if (avio_open(&m_output_format_context->pb, m_out_url.c_str(), AVIO_FLAG_WRITE) < 0) {
-            av_log(NULL, AV_LOG_ERROR, "Could not open output URL\n");
-            return -1;
-        }
-    }
+    // if (!(m_output_format_context->oformat->flags & AVFMT_NOFILE)) {
+    //     if (avio_open(&m_output_format_context->pb, m_out_url.c_str(), AVIO_FLAG_WRITE) < 0) {
+    //         av_log(NULL, AV_LOG_ERROR, "Could not open output URL\n");
+    //         return -1;
+    //     }
+    // }
 
     m_replacer = make_shared<Replacer>();
     int ret = m_replacer->init(m_input_format_context);
@@ -120,10 +120,10 @@ Relayer::startProcess() {
         }
 
         // 检查流类型
-        if (pkt->stream_index == 0) { // 假设视频流在索引 0
+        if (pkt->stream_index == m_video_stream_index) { // 假设视频流在索引 0
             // av_log(NULL, AV_LOG_INFO, "video size %d, duration %lld pts %lld\n", pkt->size, pkt->duration, pkt->pts);
             m_delayer->pushVideoFrame(pkt);
-        } else if (pkt->stream_index == 1) { // 假设音频流在索引 1
+        } else if (pkt->stream_index == m_audio_stream_index) { // 假设音频流在索引 1
             audio_frame_count++;
 
             // av_log(NULL, AV_LOG_INFO, "size %d, duration %lld pts %lld\n", pkt->size, pkt->duration, pkt->pts);
