@@ -89,6 +89,7 @@ Relayer::init() {
 
     m_asr = make_shared<Asr>(m_akId, m_akSecret, m_appkey);
     m_asr->init();
+    m_asr->setMaxSentenceSilence(m_max_sentence_silence_ms);
     m_asr->setDelayer(m_delayer);
     m_asr->createAudioDecoder(m_input_format_context);
     m_asr->createBlackListDict(m_dict_filename);

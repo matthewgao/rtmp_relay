@@ -15,6 +15,7 @@ std::string g_in_url = "";
 std::string g_out_url = "";
 std::string g_dict_file = "";
 int g_delay = 15;
+int g_sentence_gap = 200; //200ms
 
 int 
 invalied_argv(int index, int argc) {
@@ -62,6 +63,10 @@ parse_argv(int argc, char *argv[]) {
             index++;
             if (invalied_argv(index, argc)) return 1;
             g_delay = atoi(argv[index]);
+        } else if (!strcmp(argv[index], "--maxSentenceGap")) {
+            index++;
+            if (invalied_argv(index, argc)) return 1;
+            g_sentence_gap = atoi(argv[index]);
         }
         index++;
     }
@@ -102,6 +107,7 @@ int main(int argc, char *argv[]) {
         << "  --out <rtmp addr>\n"
         << "  --dict dictionary.txt\n"
         << "  --delay 10\n"
+        << "  --maxSentenceGap 200, >200\n"
         << "eg:\n"
         << "  ./rtmp_relay --in xxxxxx --out xxxxxx\n"
         << std::endl;
@@ -124,6 +130,7 @@ int main(int argc, char *argv[]) {
     relayer.setKey(g_akId, g_akSecret, g_appkey);
     relayer.setDictFile(g_dict_file);
     relayer.setDelaySec(g_delay);
+    relayer.setMaxSentenceSilence(g_sentence_gap);
     int ret = relayer.init();
     if (ret < 0) {
         av_log(NULL, AV_LOG_ERROR, "relayer init fail %d\n", ret);

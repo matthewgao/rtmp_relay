@@ -32,6 +32,10 @@ public:
         m_delay_sec = delay;
     }
 
+    void setMaxSentenceSilence(int gap_ms) {
+        m_max_sentence_silence_ms = gap_ms;
+    }
+
     Relayer (const Relayer&) = delete;
     Relayer& operator= (const Relayer&) = delete;
 
@@ -50,4 +54,5 @@ private:
     shared_ptr<Asr> m_asr = nullptr;
     shared_ptr<Replacer> m_replacer = nullptr;
     int m_delay_sec;
+    int m_max_sentence_silence_ms;
 };

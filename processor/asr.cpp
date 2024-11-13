@@ -9,11 +9,19 @@ void onTranscriptionStarted(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
 }
 
 void onTaskFailed(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
-	printf("onTaskFailed code: %d task id: %s\n", cbEvent->getStatusCode(), cbEvent->getTaskId());
+	printf("onTaskFailed code: %d task id: %s, restart the task\n", cbEvent->getStatusCode(), cbEvent->getTaskId());
+    Asr* asr = (Asr*)cbParam;
+    asr->resetAsrTimeBase();
+    asr->init();
+    asr->start();
 }
 
 void onChannelClosed(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
-	printf("onChannelClosed: %d task id: %s\n", cbEvent->getStatusCode(), cbEvent->getTaskId());
+	printf("onChannelClosed: %d task id: %s, restart the task\n", cbEvent->getStatusCode(), cbEvent->getTaskId());
+    Asr* asr = (Asr*)cbParam;
+    asr->resetAsrTimeBase();
+    asr->init();
+    asr->start();
 }
 
 void onTranscriptionResultChanged(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
@@ -22,36 +30,37 @@ void onTranscriptionResultChanged(AlibabaNls::NlsEvent* cbEvent, void* cbParam) 
 }
 
 void onTranscriptionCompleted(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
-	printf("onTranscriptionCompleted code: %d task id: %s  wordlist: %ld\n", cbEvent->getStatusCode(), cbEvent->getResult(),
+	printf("onTranscriptionCompleted code: %d result: %s  wordlist: %ld\n", cbEvent->getStatusCode(), cbEvent->getResult(),
         cbEvent->getSentenceWordsList().size());
 }
 
 void onSentenceBegin(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
-	printf("onSentenceBegin code: %d task id: %s\n", cbEvent->getStatusCode(), cbEvent->getResult());
+	// printf("onSentenceBegin code: %d task id: %s\n", cbEvent->getStatusCode(), cbEvent->getTaskId());
+    printf("-------------------------------------------------\n");
 }
 
 void onSentenceEnd(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
-	printf("onSentenceEnd status code: %d task id: %s wordlist: %ld\n", cbEvent->getStatusCode(), cbEvent->getResult(), 
-        cbEvent->getSentenceWordsList().size());
+	// printf("onSentenceEnd code: %d, wordlistSize: %ld\n", cbEvent->getStatusCode(), cbEvent->getSentenceWordsList().size());
 
     Asr* asr = (Asr*)cbParam;
     auto list = cbEvent->getSentenceWordsList();
     for (auto &item : list) {
         printf(" %s |", item.text.c_str());
         if (asr->hitDict(item.text)) {
-            printf("mute word %s", item.text.c_str());
+            printf("\nmute word: %s\n", item.text.c_str());
             int64_t base = asr->getTimeBase();
             int64_t start_pts = base + item.startTime;
             int64_t end_pts = base + item.endTime;
             asr->getDelayer()->replaceAudioPacket(start_pts, end_pts);
         }
     }
-    printf("\n");
+    printf("\nALL_RESULT: %s\n", cbEvent->getResult());
 }
 
 Asr::Asr(string akId, string akSecret, string m_appkey):m_akId(akId),m_akSecret(akSecret),m_appkey(m_appkey) {
 	pcmResampleInit();
     m_first_audio_pts = 0;
+    m_max_sentence_silence_ms = 200; //200ms
 }
 
 Asr::~Asr() {
@@ -216,7 +225,7 @@ Asr::start() {
     m_request->setInverseTextNormalization(false);
     m_request->setEnableWords(true);
     m_request->setSemanticSentenceDetection(false);
-    m_request->setMaxSentenceSilence(200);
+    m_request->setMaxSentenceSilence(m_max_sentence_silence_ms);
 
     int ret = m_request->start();
     if (ret < 0) {
@@ -304,7 +313,7 @@ Asr::sendAudio(AVPacket *pkt) {
 
             int sent_byte = m_request->sendAudio(m_pr_ctx.data, m_pr_ctx.data_len, ENCODER_OPUS);
             if (m_first_audio_pts == 0 && sent_byte > 0) {
-                av_log(NULL, AV_LOG_INFO, "set first pts to %d\n", pkt->pts);
+                av_log(NULL, AV_LOG_INFO, "set first pts to %ld\n", pkt->pts);
                 m_first_audio_pts = pkt->pts;
             }
 

@@ -82,6 +82,14 @@ public:
         return m_delayer;
     }
 
+    void setMaxSentenceSilence(int gap_ms) {
+        m_max_sentence_silence_ms = gap_ms;
+    }
+
+    void resetAsrTimeBase() {
+        m_first_audio_pts = 0;
+    }
+
 private:
     void pcmResampleInit();
     void pcmResampleSetParams(const PcmParams *pcm_src, const PcmParams *pcm_dst);
@@ -101,4 +109,5 @@ private:
     int64_t m_first_audio_pts;
     shared_ptr<Delayer> m_delayer;
     Dictionary m_dict;
+    int m_max_sentence_silence_ms;
 };
