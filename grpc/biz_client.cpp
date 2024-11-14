@@ -1,16 +1,18 @@
 #include "biz_client.h"
 
 
-BizClient::BizClient(string ip, string port) {
-    auto channel = grpc::CreateChannel(ip+":"+port, grpc::InsecureChannelCredentials());
+BizClient::BizClient(const string& host) {
+    auto channel = grpc::CreateChannel(host, grpc::InsecureChannelCredentials());
 
     m_stub = StreamInvokeService::NewStub(channel);
 }
 
 void
-BizClient::sendHitWords(string& words) {
+BizClient::sendHitWords(const string& words, int32_t start, int32_t end) {
     HitWordRequest request;
-    request.set_word("{user data}");
+    request.set_word(words);
+    request.set_starttime(start);
+    request.set_endtime(end);
 
     // Container for the data we expect from the server.
     HitWordResponse reply;

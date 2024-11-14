@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 #include <grpcpp/grpcpp.h>
-#include "service.grpc.pb.h"
+#include <service.grpc.pb.h>
 
 using namespace std;
 using grpc::Channel;
@@ -17,12 +17,10 @@ using relay::api::StreamInvokeService;
 using relay::api::HitWordRequest;
 using relay::api::HitWordResponse;
 
-class BizClient {
+class BizServer {
   public:
-    BizClient(const string& host);
-    virtual ~BizClient() {};
-
-    void sendHitWords(const string& words, int32_t start, int32_t end);
+    BizServer(string ip, string port);
+    virtual ~BizServer() {};
 
   private:
     std::unique_ptr<StreamInvokeService::Stub> m_stub;

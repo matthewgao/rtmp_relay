@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 Relayer::Relayer(const string& in_url, const string& out_url):m_in_url(in_url), m_out_url(out_url) {
-
+    m_grpc_enabled = false;
 }
 
 Relayer::~Relayer() {
@@ -97,6 +97,11 @@ Relayer::init() {
     if (ret < 0) {
         av_log(NULL, AV_LOG_ERROR, "Could not open asr %d\n", ret);
         return -1;
+    }
+
+    if (m_grpc_enabled) {
+        m_biz_client = make_shared<BizClient>(m_grpc_host);
+        m_asr->setBizClient(m_biz_client);
     }
 
     return 0;

@@ -52,6 +52,7 @@ void onSentenceEnd(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
             int64_t start_pts = base + item.startTime;
             int64_t end_pts = base + item.endTime;
             asr->getDelayer()->replaceAudioPacket(start_pts, end_pts);
+            asr->sendHitWord(item.text, item.startTime, item.endTime);
         }
     }
     printf("\nALL_RESULT: %s\n", cbEvent->getResult());
@@ -354,4 +355,9 @@ Asr::createBlackListDict(string file) {
 bool 
 Asr::hitDict(string& word) {
     return m_dict.exists(word);
+}
+
+void
+Asr::sendHitWord(const string& word, int32_t start, int32_t end) {
+    m_biz_client->sendHitWords(word, start, end);
 }

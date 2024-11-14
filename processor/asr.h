@@ -22,6 +22,7 @@ extern "C" {
 #include "speechTranscriberRequest.h"
 #include "delayer.h"
 #include "../censor/dictionary.h"
+#include "../grpc/biz_client.h"
 
 using namespace std;
 
@@ -90,6 +91,12 @@ public:
         m_first_audio_pts = 0;
     }
 
+    void setBizClient(shared_ptr<BizClient> client) {
+        m_biz_client = client;
+    }
+
+    void sendHitWord(const string& word, int32_t start, int32_t end);
+
 private:
     void pcmResampleInit();
     void pcmResampleSetParams(const PcmParams *pcm_src, const PcmParams *pcm_dst);
@@ -110,4 +117,5 @@ private:
     shared_ptr<Delayer> m_delayer;
     Dictionary m_dict;
     int m_max_sentence_silence_ms;
+    shared_ptr<BizClient> m_biz_client;
 };

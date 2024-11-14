@@ -25,6 +25,8 @@ std::string g_out_url = "";
 std::string g_dict_file = "";
 int g_delay = 15;
 int g_sentence_gap = 200; //200ms
+bool g_enable_grpc = false;
+std::string g_grpc_host = "";
 
 int 
 invalied_argv(int index, int argc) {
@@ -76,7 +78,13 @@ parse_argv(int argc, char *argv[]) {
             index++;
             if (invalied_argv(index, argc)) return 1;
             g_sentence_gap = atoi(argv[index]);
-        }
+        } else if (!strcmp(argv[index], "--grpc")) {
+            g_enable_grpc = true;
+        } else if (!strcmp(argv[index], "--grpcHost")) {
+            index++;
+            if (invalied_argv(index, argc)) return 1;
+            g_grpc_host = argv[index];
+        } 
         index++;
     }
 
@@ -118,6 +126,8 @@ int main(int argc, char *argv[]) {
         << "  --dict dictionary.txt\n"
         << "  --delay 10\n"
         << "  --maxSentenceGap 200, >200\n"
+        << "  --grpc\n"
+        << "  --grpcHost 127.0.0.1:1234\n"
         << "eg:\n"
         << "  ./rtmp_relay --in xxxxxx --out xxxxxx\n"
         << std::endl;
@@ -141,6 +151,10 @@ int main(int argc, char *argv[]) {
     relayer.setDictFile(g_dict_file);
     relayer.setDelaySec(g_delay);
     relayer.setMaxSentenceSilence(g_sentence_gap);
+    if(g_enable_grpc) {
+        relayer.enableGrpc();
+        relayer.setGrpcHost(g_grpc_host);
+    }
     int ret = relayer.init();
     if (ret < 0) {
         av_log(NULL, AV_LOG_ERROR, "relayer init fail %d\n", ret);

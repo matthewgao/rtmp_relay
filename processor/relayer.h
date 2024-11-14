@@ -12,6 +12,7 @@ extern "C" {
 #include <list>
 #include <memory>
 #include <iostream>
+#include "../grpc/biz_client.h"
 
 using namespace std;
 
@@ -36,6 +37,14 @@ public:
         m_max_sentence_silence_ms = gap_ms;
     }
 
+    void setGrpcHost(const string& host) {
+        m_grpc_host = host;
+    }
+
+    void enableGrpc() {
+        m_grpc_enabled = true;
+    }
+
     Relayer (const Relayer&) = delete;
     Relayer& operator= (const Relayer&) = delete;
 
@@ -55,4 +64,7 @@ private:
     shared_ptr<Replacer> m_replacer = nullptr;
     int m_delay_sec;
     int m_max_sentence_silence_ms;
+    shared_ptr<BizClient> m_biz_client;
+    string m_grpc_host;
+    bool m_grpc_enabled;
 };

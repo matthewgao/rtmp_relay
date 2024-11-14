@@ -26,6 +26,7 @@ add_subdirectory(censor)
 add_subdirectory(grpc)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -static-libasan -fno-omit-frame-pointer  -g")
 #set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fsanitize=address -static-libasan ")
+set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH} ./3rd-party/grpc/bin")
 aux_source_directory(. DIR_SRCS)
 # find_package(FFmpeg REQUIRED)
 

@@ -5,6 +5,9 @@ set (CMAKE_CXX_STANDARD 17)
 find_package(PkgConfig REQUIRED)
 
 message(STATUS "PROTOC DIR_SRCS: [${DIR_SRCS}]")
+include_directories("/root/.local/include")
+set(CMAKE_PREFIX_PATH ./../3rd-party/grpc/bin)
+# set(Protobuf_DIR "./../3rd-party/grpc/bin")
 
 if(GRPC_AS_SUBMODULE)
   # One way to build a projects that uses gRPC is to just include the
@@ -114,7 +117,7 @@ add_custom_command(
 message(STATUS "proto include_directories: [${CMAKE_CURRENT_BINARY_DIR}]")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 include_directories("../")
-include_directories(../utils)
+# include_directories(../utils)
 
 add_library (grpc STATIC biz_client.cpp ${vm_grpc_srcs} ${vm_proto_srcs} ${vm_grpc_msg_srcs} ${vm_proto_msg_srcs})
 target_link_libraries(grpc ${_GRPC_GRPCPP_UNSECURE} ${_PROTOBUF_LIBPROTOBUF})

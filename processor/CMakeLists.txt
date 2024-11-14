@@ -19,6 +19,8 @@ include_directories(${FFMPEG_INCLUDE_DIR})
 include_directories(${ASR_INCLUDE_DIR})
 link_directories(${FFMPEG_LIBRARY_DIR})
 link_directories(${ASR_LIBRARY_DIR})
+link_directories("./../3rd-party/grpc/lib")
+include_directories("./../3rd-party/grpc/include")
 
 find_library(AVFORMAT_LIBRARY NAMES avformat PATHS ${FFMPEG_LIBRARY_DIR})
 find_library(AVCODEC_LIBRARY NAMES avcodec PATHS ${FFMPEG_LIBRARY_DIR})
