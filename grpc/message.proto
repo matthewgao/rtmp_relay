@@ -1,0 +1,15 @@
+syntax = "proto3";
+package relay.api;
+
+message HitWordRequest {
+    string requestId = 1;
+    string word = 2;
+    int32 startTime = 3; 
+    int32 endTime = 4;
+}
+
+message HitWordResponse {
+    string requestId = 1;
+    int32 code = 2;
+    string message = 3;   
+}
