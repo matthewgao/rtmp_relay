@@ -7,6 +7,15 @@ extern "C" {
 }
 #include "processor/relayer.h"
 
+const char * BANNER = R"(
+██████╗ ████████╗███╗   ███╗██████╗     ██████╗ ███████╗██╗      █████╗ ██╗   ██╗
+██╔══██╗╚══██╔══╝████╗ ████║██╔══██╗    ██╔══██╗██╔════╝██║     ██╔══██╗╚██╗ ██╔╝
+██████╔╝   ██║   ██╔████╔██║██████╔╝    ██████╔╝█████╗  ██║     ███████║ ╚████╔╝ 
+██╔══██╗   ██║   ██║╚██╔╝██║██╔═══╝     ██╔══██╗██╔══╝  ██║     ██╔══██║  ╚██╔╝  
+██║  ██║   ██║   ██║ ╚═╝ ██║██║         ██║  ██║███████╗███████╗██║  ██║   ██║   
+╚═╝  ╚═╝   ╚═╝   ╚═╝     ╚═╝╚═╝         ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   
+)";
+
 std::string g_appkey = "";
 std::string g_akId = "";
 std::string g_akSecret = "";
@@ -94,6 +103,7 @@ void my_log_callback(void* ptr, int level, const char* fmt, va_list vl) {
 }
 
 int main(int argc, char *argv[]) {
+    cout<< BANNER <<endl;
     if (parse_argv(argc, argv) != 0) {
         av_log(NULL, AV_LOG_ERROR, "wrong params\n");
         std::cout
