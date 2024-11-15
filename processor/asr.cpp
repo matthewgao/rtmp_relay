@@ -62,6 +62,7 @@ Asr::Asr(string akId, string akSecret, string m_appkey):m_akId(akId),m_akSecret(
 	pcmResampleInit();
     m_first_audio_pts = 0;
     m_max_sentence_silence_ms = 200; //200ms
+    m_biz_client = nullptr;
 }
 
 Asr::~Asr() {
@@ -359,5 +360,9 @@ Asr::hitDict(string& word) {
 
 void
 Asr::sendHitWord(const string& word, int32_t start, int32_t end) {
+    if (m_biz_client == nullptr) {
+        return;
+    }
+
     m_biz_client->sendHitWords(word, start, end);
 }
