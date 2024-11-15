@@ -6,7 +6,11 @@ find_package(PkgConfig REQUIRED)
 
 message(STATUS "PROTOC DIR_SRCS: [${DIR_SRCS}]")
 include_directories("/root/.local/include")
-set(CMAKE_PREFIX_PATH ./../3rd-party/grpc/bin)
+include_directories("/home/admin/.local/include")
+# set(CMAKE_PREFIX_PATH /root/.local/lib/cmake/protobuf)
+set(CMAKE_PREFIX_PATH "/root/.local/lib/cmake/protobuf/" ${CMAKE_PREFIX_PATH})
+set(CMAKE_PREFIX_PATH "/home/admin/.local/lib/cmake/protobuf/" ${CMAKE_PREFIX_PATH})
+set(CMAKE_PREFIX_PATH "/home/admin/.local/lib/cmake/" ${CMAKE_PREFIX_PATH})
 # set(Protobuf_DIR "./../3rd-party/grpc/bin")
 
 if(GRPC_AS_SUBMODULE)

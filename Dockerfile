@@ -1,4 +1,4 @@
-FROM ffmpeg61:v1.0.0
+FROM crpi-dq9yw3ziixu7q5k4.cn-shanghai.personal.cr.aliyuncs.com/ga0sh3n/ffmpeg61:v1.0.1
 
 # EXPOSE 80
 
@@ -16,6 +16,6 @@ COPY main.cpp  /home/admin/rtmp_relay/.
 WORKDIR /home/admin/rtmp_relay
 RUN mkdir -p /home/admin/rtmp_relay/build
 RUN cd build && cmake ../. && make
-
+ENV PATH="/home/admin/.local/bin:/usr/local/bin:$PATH"
 
 WORKDIR /home/admin/rtmp_relay/build

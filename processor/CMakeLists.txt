@@ -17,6 +17,8 @@ set(ASR_LIBRARY_DIR "./../alibabacloud-nls-cpp-sdk/build/install/NlsSdk3.X_LINUX
 
 include_directories(${FFMPEG_INCLUDE_DIR})
 include_directories(${ASR_INCLUDE_DIR})
+include_directories("/root/.local/include")
+include_directories("/home/admin/.local/include")
 link_directories(${FFMPEG_LIBRARY_DIR})
 link_directories(${ASR_LIBRARY_DIR})
 link_directories("./../3rd-party/grpc/lib")
