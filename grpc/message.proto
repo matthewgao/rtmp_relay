@@ -13,3 +13,23 @@ message HitWordResponse {
     int32 code = 2;
     string message = 3;   
 }
+
+message SentenceRequest {
+    string requestId = 1;
+    string sentence = 2;
+    int32 startTime = 3; 
+    int32 endTime = 4;
+    repeated WordList wordList = 5;
+}
+
+message WordList {
+    string word = 2;
+    int32 startTime = 3; 
+    int32 endTime = 4;
+}
+
+message SentenceResponse {
+    string requestId = 1;
+    int32 code = 2;
+    string message = 3;   
+}

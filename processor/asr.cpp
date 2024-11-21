@@ -43,6 +43,7 @@ void onSentenceEnd(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
 	// printf("onSentenceEnd code: %d, wordlistSize: %ld\n", cbEvent->getStatusCode(), cbEvent->getSentenceWordsList().size());
 
     Asr* asr = (Asr*)cbParam;
+    
     auto list = cbEvent->getSentenceWordsList();
     for (auto &item : list) {
         printf(" %s |", item.text.c_str());
@@ -55,7 +56,9 @@ void onSentenceEnd(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
             asr->sendHitWord(item.text, item.startTime, item.endTime);
         }
     }
-    printf("\nALL_RESULT: %s\n", cbEvent->getResult());
+    asr->sendSentence(cbEvent->getResult(), cbEvent->getSentenceBeginTime(), 
+        cbEvent->getSentenceBeginTime() + cbEvent->getSentenceTime(), list);
+    printf("\nALL_RESULT: %s, from %ld to %ld\n", cbEvent->getResult(), cbEvent->getSentenceBeginTime(), cbEvent->getSentenceTime());
 }
 
 Asr::Asr(string akId, string akSecret, string m_appkey):m_akId(akId),m_akSecret(akSecret),m_appkey(m_appkey) {
@@ -365,4 +368,13 @@ Asr::sendHitWord(const string& word, int32_t start, int32_t end) {
     }
 
     m_biz_client->sendHitWords(word, start, end);
+}
+
+void
+Asr::sendSentence(const string& sentence, int32_t start, int32_t end, std::list<AlibabaNls::WordInfomation>& word_list) {
+    if (m_biz_client == nullptr) {
+        return;
+    }
+
+    m_biz_client->sendSentence(sentence, start, end, word_list);
 }

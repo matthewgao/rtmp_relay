@@ -96,6 +96,7 @@ public:
     }
 
     void sendHitWord(const string& word, int32_t start, int32_t end);
+    void sendSentence(const string& sentence, int32_t start, int32_t end, std::list<AlibabaNls::WordInfomation>& word_list);
 
 private:
     void pcmResampleInit();

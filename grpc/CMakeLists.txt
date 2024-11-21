@@ -11,7 +11,11 @@ include_directories("/home/admin/.local/include")
 set(CMAKE_PREFIX_PATH "/root/.local/lib/cmake/protobuf/" ${CMAKE_PREFIX_PATH})
 set(CMAKE_PREFIX_PATH "/home/admin/.local/lib/cmake/protobuf/" ${CMAKE_PREFIX_PATH})
 set(CMAKE_PREFIX_PATH "/home/admin/.local/lib/cmake/" ${CMAKE_PREFIX_PATH})
-# set(Protobuf_DIR "./../3rd-party/grpc/bin")
+set(ASR_INCLUDE_DIR "./../alibabacloud-nls-cpp-sdk/build/install/NlsSdk3.X_LINUX/include")
+set(ASR_LIBRARY_DIR "./../alibabacloud-nls-cpp-sdk/build/install/NlsSdk3.X_LINUX/lib") 
+
+include_directories(${ASR_INCLUDE_DIR})
+link_directories(${ASR_LIBRARY_DIR})
 
 if(GRPC_AS_SUBMODULE)
   # One way to build a projects that uses gRPC is to just include the
@@ -124,4 +128,4 @@ include_directories("../")
 # include_directories(../utils)
 
 add_library (grpc STATIC biz_client.cpp ${vm_grpc_srcs} ${vm_proto_srcs} ${vm_grpc_msg_srcs} ${vm_proto_msg_srcs})
-target_link_libraries(grpc ${_GRPC_GRPCPP_UNSECURE} ${_PROTOBUF_LIBPROTOBUF})
+target_link_libraries(grpc ${_GRPC_GRPCPP_UNSECURE} ${_PROTOBUF_LIBPROTOBUF} ${ASR_LIBRARY})

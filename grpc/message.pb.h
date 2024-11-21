@@ -57,6 +57,15 @@ extern HitWordRequestDefaultTypeInternal _HitWordRequest_default_instance_;
 class HitWordResponse;
 struct HitWordResponseDefaultTypeInternal;
 extern HitWordResponseDefaultTypeInternal _HitWordResponse_default_instance_;
+class SentenceRequest;
+struct SentenceRequestDefaultTypeInternal;
+extern SentenceRequestDefaultTypeInternal _SentenceRequest_default_instance_;
+class SentenceResponse;
+struct SentenceResponseDefaultTypeInternal;
+extern SentenceResponseDefaultTypeInternal _SentenceResponse_default_instance_;
+class WordList;
+struct WordListDefaultTypeInternal;
+extern WordListDefaultTypeInternal _WordList_default_instance_;
 }  // namespace api
 }  // namespace relay
 namespace google {
@@ -70,6 +79,414 @@ namespace api {
 // ===================================================================
 
 
+// -------------------------------------------------------------------
+
+class WordList final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:relay.api.WordList) */ {
+ public:
+  inline WordList() : WordList(nullptr) {}
+  ~WordList() override;
+  template <typename = void>
+  explicit PROTOBUF_CONSTEXPR WordList(
+      ::google::protobuf::internal::ConstantInitialized);
+
+  inline WordList(const WordList& from) : WordList(nullptr, from) {}
+  inline WordList(WordList&& from) noexcept
+      : WordList(nullptr, std::move(from)) {}
+  inline WordList& operator=(const WordList& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline WordList& operator=(WordList&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetArena() == from.GetArena()
+#ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetArena() != nullptr
+#endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields()
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::google::protobuf::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::google::protobuf::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const WordList& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const WordList* internal_default_instance() {
+    return reinterpret_cast<const WordList*>(
+        &_WordList_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages = 3;
+  friend void swap(WordList& a, WordList& b) { a.Swap(&b); }
+  inline void Swap(WordList* other) {
+    if (other == this) return;
+#ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() != nullptr && GetArena() == other->GetArena()) {
+#else   // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() == other->GetArena()) {
+#endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(WordList* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  WordList* New(::google::protobuf::Arena* arena = nullptr) const final {
+    return ::google::protobuf::Message::DefaultConstruct<WordList>(arena);
+  }
+  using ::google::protobuf::Message::CopyFrom;
+  void CopyFrom(const WordList& from);
+  using ::google::protobuf::Message::MergeFrom;
+  void MergeFrom(const WordList& from) { WordList::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(
+      ::google::protobuf::MessageLite& to_msg,
+      const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() final;
+  ::size_t ByteSizeLong() const final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void InternalSwap(WordList* other);
+ private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() { return "relay.api.WordList"; }
+
+ protected:
+  explicit WordList(::google::protobuf::Arena* arena);
+  WordList(::google::protobuf::Arena* arena, const WordList& from);
+  WordList(::google::protobuf::Arena* arena, WordList&& from) noexcept
+      : WordList(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::Message::ClassData* GetClassData() const final;
+
+ public:
+  ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kWordFieldNumber = 2,
+    kStartTimeFieldNumber = 3,
+    kEndTimeFieldNumber = 4,
+  };
+  // string word = 2;
+  void clear_word() ;
+  const std::string& word() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_word(Arg_&& arg, Args_... args);
+  std::string* mutable_word();
+  PROTOBUF_NODISCARD std::string* release_word();
+  void set_allocated_word(std::string* value);
+
+  private:
+  const std::string& _internal_word() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_word(
+      const std::string& value);
+  std::string* _internal_mutable_word();
+
+  public:
+  // int32 startTime = 3;
+  void clear_starttime() ;
+  ::int32_t starttime() const;
+  void set_starttime(::int32_t value);
+
+  private:
+  ::int32_t _internal_starttime() const;
+  void _internal_set_starttime(::int32_t value);
+
+  public:
+  // int32 endTime = 4;
+  void clear_endtime() ;
+  ::int32_t endtime() const;
+  void set_endtime(::int32_t value);
+
+  private:
+  ::int32_t _internal_endtime() const;
+  void _internal_set_endtime(::int32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:relay.api.WordList)
+ private:
+  class _Internal;
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<
+      2, 3, 0,
+      31, 2>
+      _table_;
+
+  static constexpr const void* _raw_default_instance_ =
+      &_WordList_default_instance_;
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(
+        ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena);
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena, const Impl_& from,
+                          const WordList& from_msg);
+    ::google::protobuf::internal::ArenaStringPtr word_;
+    ::int32_t starttime_;
+    ::int32_t endtime_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_message_2eproto;
+};
+// -------------------------------------------------------------------
+
+class SentenceResponse final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:relay.api.SentenceResponse) */ {
+ public:
+  inline SentenceResponse() : SentenceResponse(nullptr) {}
+  ~SentenceResponse() override;
+  template <typename = void>
+  explicit PROTOBUF_CONSTEXPR SentenceResponse(
+      ::google::protobuf::internal::ConstantInitialized);
+
+  inline SentenceResponse(const SentenceResponse& from) : SentenceResponse(nullptr, from) {}
+  inline SentenceResponse(SentenceResponse&& from) noexcept
+      : SentenceResponse(nullptr, std::move(from)) {}
+  inline SentenceResponse& operator=(const SentenceResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline SentenceResponse& operator=(SentenceResponse&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetArena() == from.GetArena()
+#ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetArena() != nullptr
+#endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields()
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::google::protobuf::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::google::protobuf::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const SentenceResponse& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const SentenceResponse* internal_default_instance() {
+    return reinterpret_cast<const SentenceResponse*>(
+        &_SentenceResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages = 4;
+  friend void swap(SentenceResponse& a, SentenceResponse& b) { a.Swap(&b); }
+  inline void Swap(SentenceResponse* other) {
+    if (other == this) return;
+#ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() != nullptr && GetArena() == other->GetArena()) {
+#else   // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() == other->GetArena()) {
+#endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(SentenceResponse* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  SentenceResponse* New(::google::protobuf::Arena* arena = nullptr) const final {
+    return ::google::protobuf::Message::DefaultConstruct<SentenceResponse>(arena);
+  }
+  using ::google::protobuf::Message::CopyFrom;
+  void CopyFrom(const SentenceResponse& from);
+  using ::google::protobuf::Message::MergeFrom;
+  void MergeFrom(const SentenceResponse& from) { SentenceResponse::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(
+      ::google::protobuf::MessageLite& to_msg,
+      const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() final;
+  ::size_t ByteSizeLong() const final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void InternalSwap(SentenceResponse* other);
+ private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() { return "relay.api.SentenceResponse"; }
+
+ protected:
+  explicit SentenceResponse(::google::protobuf::Arena* arena);
+  SentenceResponse(::google::protobuf::Arena* arena, const SentenceResponse& from);
+  SentenceResponse(::google::protobuf::Arena* arena, SentenceResponse&& from) noexcept
+      : SentenceResponse(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::Message::ClassData* GetClassData() const final;
+
+ public:
+  ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kRequestIdFieldNumber = 1,
+    kMessageFieldNumber = 3,
+    kCodeFieldNumber = 2,
+  };
+  // string requestId = 1;
+  void clear_requestid() ;
+  const std::string& requestid() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_requestid(Arg_&& arg, Args_... args);
+  std::string* mutable_requestid();
+  PROTOBUF_NODISCARD std::string* release_requestid();
+  void set_allocated_requestid(std::string* value);
+
+  private:
+  const std::string& _internal_requestid() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_requestid(
+      const std::string& value);
+  std::string* _internal_mutable_requestid();
+
+  public:
+  // string message = 3;
+  void clear_message() ;
+  const std::string& message() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_message(Arg_&& arg, Args_... args);
+  std::string* mutable_message();
+  PROTOBUF_NODISCARD std::string* release_message();
+  void set_allocated_message(std::string* value);
+
+  private:
+  const std::string& _internal_message() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_message(
+      const std::string& value);
+  std::string* _internal_mutable_message();
+
+  public:
+  // int32 code = 2;
+  void clear_code() ;
+  ::int32_t code() const;
+  void set_code(::int32_t value);
+
+  private:
+  ::int32_t _internal_code() const;
+  void _internal_set_code(::int32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:relay.api.SentenceResponse)
+ private:
+  class _Internal;
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<
+      2, 3, 0,
+      51, 2>
+      _table_;
+
+  static constexpr const void* _raw_default_instance_ =
+      &_SentenceResponse_default_instance_;
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(
+        ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena);
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena, const Impl_& from,
+                          const SentenceResponse& from_msg);
+    ::google::protobuf::internal::ArenaStringPtr requestid_;
+    ::google::protobuf::internal::ArenaStringPtr message_;
+    ::int32_t code_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_message_2eproto;
+};
 // -------------------------------------------------------------------
 
 class HitWordResponse final : public ::google::protobuf::Message
@@ -496,6 +913,244 @@ class HitWordRequest final : public ::google::protobuf::Message
   union { Impl_ _impl_; };
   friend struct ::TableStruct_message_2eproto;
 };
+// -------------------------------------------------------------------
+
+class SentenceRequest final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:relay.api.SentenceRequest) */ {
+ public:
+  inline SentenceRequest() : SentenceRequest(nullptr) {}
+  ~SentenceRequest() override;
+  template <typename = void>
+  explicit PROTOBUF_CONSTEXPR SentenceRequest(
+      ::google::protobuf::internal::ConstantInitialized);
+
+  inline SentenceRequest(const SentenceRequest& from) : SentenceRequest(nullptr, from) {}
+  inline SentenceRequest(SentenceRequest&& from) noexcept
+      : SentenceRequest(nullptr, std::move(from)) {}
+  inline SentenceRequest& operator=(const SentenceRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline SentenceRequest& operator=(SentenceRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetArena() == from.GetArena()
+#ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetArena() != nullptr
+#endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields()
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::google::protobuf::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::google::protobuf::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const SentenceRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const SentenceRequest* internal_default_instance() {
+    return reinterpret_cast<const SentenceRequest*>(
+        &_SentenceRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages = 2;
+  friend void swap(SentenceRequest& a, SentenceRequest& b) { a.Swap(&b); }
+  inline void Swap(SentenceRequest* other) {
+    if (other == this) return;
+#ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() != nullptr && GetArena() == other->GetArena()) {
+#else   // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() == other->GetArena()) {
+#endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(SentenceRequest* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  SentenceRequest* New(::google::protobuf::Arena* arena = nullptr) const final {
+    return ::google::protobuf::Message::DefaultConstruct<SentenceRequest>(arena);
+  }
+  using ::google::protobuf::Message::CopyFrom;
+  void CopyFrom(const SentenceRequest& from);
+  using ::google::protobuf::Message::MergeFrom;
+  void MergeFrom(const SentenceRequest& from) { SentenceRequest::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(
+      ::google::protobuf::MessageLite& to_msg,
+      const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() final;
+  ::size_t ByteSizeLong() const final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void InternalSwap(SentenceRequest* other);
+ private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() { return "relay.api.SentenceRequest"; }
+
+ protected:
+  explicit SentenceRequest(::google::protobuf::Arena* arena);
+  SentenceRequest(::google::protobuf::Arena* arena, const SentenceRequest& from);
+  SentenceRequest(::google::protobuf::Arena* arena, SentenceRequest&& from) noexcept
+      : SentenceRequest(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::Message::ClassData* GetClassData() const final;
+
+ public:
+  ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kWordListFieldNumber = 5,
+    kRequestIdFieldNumber = 1,
+    kSentenceFieldNumber = 2,
+    kStartTimeFieldNumber = 3,
+    kEndTimeFieldNumber = 4,
+  };
+  // repeated .relay.api.WordList wordList = 5;
+  int wordlist_size() const;
+  private:
+  int _internal_wordlist_size() const;
+
+  public:
+  void clear_wordlist() ;
+  ::relay::api::WordList* mutable_wordlist(int index);
+  ::google::protobuf::RepeatedPtrField<::relay::api::WordList>* mutable_wordlist();
+
+  private:
+  const ::google::protobuf::RepeatedPtrField<::relay::api::WordList>& _internal_wordlist() const;
+  ::google::protobuf::RepeatedPtrField<::relay::api::WordList>* _internal_mutable_wordlist();
+  public:
+  const ::relay::api::WordList& wordlist(int index) const;
+  ::relay::api::WordList* add_wordlist();
+  const ::google::protobuf::RepeatedPtrField<::relay::api::WordList>& wordlist() const;
+  // string requestId = 1;
+  void clear_requestid() ;
+  const std::string& requestid() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_requestid(Arg_&& arg, Args_... args);
+  std::string* mutable_requestid();
+  PROTOBUF_NODISCARD std::string* release_requestid();
+  void set_allocated_requestid(std::string* value);
+
+  private:
+  const std::string& _internal_requestid() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_requestid(
+      const std::string& value);
+  std::string* _internal_mutable_requestid();
+
+  public:
+  // string sentence = 2;
+  void clear_sentence() ;
+  const std::string& sentence() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_sentence(Arg_&& arg, Args_... args);
+  std::string* mutable_sentence();
+  PROTOBUF_NODISCARD std::string* release_sentence();
+  void set_allocated_sentence(std::string* value);
+
+  private:
+  const std::string& _internal_sentence() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_sentence(
+      const std::string& value);
+  std::string* _internal_mutable_sentence();
+
+  public:
+  // int32 startTime = 3;
+  void clear_starttime() ;
+  ::int32_t starttime() const;
+  void set_starttime(::int32_t value);
+
+  private:
+  ::int32_t _internal_starttime() const;
+  void _internal_set_starttime(::int32_t value);
+
+  public:
+  // int32 endTime = 4;
+  void clear_endtime() ;
+  ::int32_t endtime() const;
+  void set_endtime(::int32_t value);
+
+  private:
+  ::int32_t _internal_endtime() const;
+  void _internal_set_endtime(::int32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:relay.api.SentenceRequest)
+ private:
+  class _Internal;
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<
+      3, 5, 1,
+      51, 2>
+      _table_;
+
+  static constexpr const void* _raw_default_instance_ =
+      &_SentenceRequest_default_instance_;
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(
+        ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena);
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena, const Impl_& from,
+                          const SentenceRequest& from_msg);
+    ::google::protobuf::RepeatedPtrField< ::relay::api::WordList > wordlist_;
+    ::google::protobuf::internal::ArenaStringPtr requestid_;
+    ::google::protobuf::internal::ArenaStringPtr sentence_;
+    ::int32_t starttime_;
+    ::int32_t endtime_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_message_2eproto;
+};
 
 // ===================================================================
 
@@ -781,6 +1436,427 @@ inline void HitWordResponse::set_allocated_message(std::string* value) {
         }
   #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:relay.api.HitWordResponse.message)
+}
+
+// -------------------------------------------------------------------
+
+// SentenceRequest
+
+// string requestId = 1;
+inline void SentenceRequest::clear_requestid() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.requestid_.ClearToEmpty();
+}
+inline const std::string& SentenceRequest::requestid() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:relay.api.SentenceRequest.requestId)
+  return _internal_requestid();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void SentenceRequest::set_requestid(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.requestid_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:relay.api.SentenceRequest.requestId)
+}
+inline std::string* SentenceRequest::mutable_requestid() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_requestid();
+  // @@protoc_insertion_point(field_mutable:relay.api.SentenceRequest.requestId)
+  return _s;
+}
+inline const std::string& SentenceRequest::_internal_requestid() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.requestid_.Get();
+}
+inline void SentenceRequest::_internal_set_requestid(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.requestid_.Set(value, GetArena());
+}
+inline std::string* SentenceRequest::_internal_mutable_requestid() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.requestid_.Mutable( GetArena());
+}
+inline std::string* SentenceRequest::release_requestid() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:relay.api.SentenceRequest.requestId)
+  return _impl_.requestid_.Release();
+}
+inline void SentenceRequest::set_allocated_requestid(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.requestid_.SetAllocated(value, GetArena());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.requestid_.IsDefault()) {
+          _impl_.requestid_.Set("", GetArena());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:relay.api.SentenceRequest.requestId)
+}
+
+// string sentence = 2;
+inline void SentenceRequest::clear_sentence() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.sentence_.ClearToEmpty();
+}
+inline const std::string& SentenceRequest::sentence() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:relay.api.SentenceRequest.sentence)
+  return _internal_sentence();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void SentenceRequest::set_sentence(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.sentence_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:relay.api.SentenceRequest.sentence)
+}
+inline std::string* SentenceRequest::mutable_sentence() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_sentence();
+  // @@protoc_insertion_point(field_mutable:relay.api.SentenceRequest.sentence)
+  return _s;
+}
+inline const std::string& SentenceRequest::_internal_sentence() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.sentence_.Get();
+}
+inline void SentenceRequest::_internal_set_sentence(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.sentence_.Set(value, GetArena());
+}
+inline std::string* SentenceRequest::_internal_mutable_sentence() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.sentence_.Mutable( GetArena());
+}
+inline std::string* SentenceRequest::release_sentence() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:relay.api.SentenceRequest.sentence)
+  return _impl_.sentence_.Release();
+}
+inline void SentenceRequest::set_allocated_sentence(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.sentence_.SetAllocated(value, GetArena());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.sentence_.IsDefault()) {
+          _impl_.sentence_.Set("", GetArena());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:relay.api.SentenceRequest.sentence)
+}
+
+// int32 startTime = 3;
+inline void SentenceRequest::clear_starttime() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.starttime_ = 0;
+}
+inline ::int32_t SentenceRequest::starttime() const {
+  // @@protoc_insertion_point(field_get:relay.api.SentenceRequest.startTime)
+  return _internal_starttime();
+}
+inline void SentenceRequest::set_starttime(::int32_t value) {
+  _internal_set_starttime(value);
+  // @@protoc_insertion_point(field_set:relay.api.SentenceRequest.startTime)
+}
+inline ::int32_t SentenceRequest::_internal_starttime() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.starttime_;
+}
+inline void SentenceRequest::_internal_set_starttime(::int32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.starttime_ = value;
+}
+
+// int32 endTime = 4;
+inline void SentenceRequest::clear_endtime() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.endtime_ = 0;
+}
+inline ::int32_t SentenceRequest::endtime() const {
+  // @@protoc_insertion_point(field_get:relay.api.SentenceRequest.endTime)
+  return _internal_endtime();
+}
+inline void SentenceRequest::set_endtime(::int32_t value) {
+  _internal_set_endtime(value);
+  // @@protoc_insertion_point(field_set:relay.api.SentenceRequest.endTime)
+}
+inline ::int32_t SentenceRequest::_internal_endtime() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.endtime_;
+}
+inline void SentenceRequest::_internal_set_endtime(::int32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.endtime_ = value;
+}
+
+// repeated .relay.api.WordList wordList = 5;
+inline int SentenceRequest::_internal_wordlist_size() const {
+  return _internal_wordlist().size();
+}
+inline int SentenceRequest::wordlist_size() const {
+  return _internal_wordlist_size();
+}
+inline void SentenceRequest::clear_wordlist() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.wordlist_.Clear();
+}
+inline ::relay::api::WordList* SentenceRequest::mutable_wordlist(int index)
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_mutable:relay.api.SentenceRequest.wordList)
+  return _internal_mutable_wordlist()->Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField<::relay::api::WordList>* SentenceRequest::mutable_wordlist()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_mutable_list:relay.api.SentenceRequest.wordList)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _internal_mutable_wordlist();
+}
+inline const ::relay::api::WordList& SentenceRequest::wordlist(int index) const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:relay.api.SentenceRequest.wordList)
+  return _internal_wordlist().Get(index);
+}
+inline ::relay::api::WordList* SentenceRequest::add_wordlist() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::relay::api::WordList* _add = _internal_mutable_wordlist()->Add();
+  // @@protoc_insertion_point(field_add:relay.api.SentenceRequest.wordList)
+  return _add;
+}
+inline const ::google::protobuf::RepeatedPtrField<::relay::api::WordList>& SentenceRequest::wordlist() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_list:relay.api.SentenceRequest.wordList)
+  return _internal_wordlist();
+}
+inline const ::google::protobuf::RepeatedPtrField<::relay::api::WordList>&
+SentenceRequest::_internal_wordlist() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.wordlist_;
+}
+inline ::google::protobuf::RepeatedPtrField<::relay::api::WordList>*
+SentenceRequest::_internal_mutable_wordlist() {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return &_impl_.wordlist_;
+}
+
+// -------------------------------------------------------------------
+
+// WordList
+
+// string word = 2;
+inline void WordList::clear_word() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.word_.ClearToEmpty();
+}
+inline const std::string& WordList::word() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:relay.api.WordList.word)
+  return _internal_word();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void WordList::set_word(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.word_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:relay.api.WordList.word)
+}
+inline std::string* WordList::mutable_word() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_word();
+  // @@protoc_insertion_point(field_mutable:relay.api.WordList.word)
+  return _s;
+}
+inline const std::string& WordList::_internal_word() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.word_.Get();
+}
+inline void WordList::_internal_set_word(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.word_.Set(value, GetArena());
+}
+inline std::string* WordList::_internal_mutable_word() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.word_.Mutable( GetArena());
+}
+inline std::string* WordList::release_word() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:relay.api.WordList.word)
+  return _impl_.word_.Release();
+}
+inline void WordList::set_allocated_word(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.word_.SetAllocated(value, GetArena());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.word_.IsDefault()) {
+          _impl_.word_.Set("", GetArena());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:relay.api.WordList.word)
+}
+
+// int32 startTime = 3;
+inline void WordList::clear_starttime() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.starttime_ = 0;
+}
+inline ::int32_t WordList::starttime() const {
+  // @@protoc_insertion_point(field_get:relay.api.WordList.startTime)
+  return _internal_starttime();
+}
+inline void WordList::set_starttime(::int32_t value) {
+  _internal_set_starttime(value);
+  // @@protoc_insertion_point(field_set:relay.api.WordList.startTime)
+}
+inline ::int32_t WordList::_internal_starttime() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.starttime_;
+}
+inline void WordList::_internal_set_starttime(::int32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.starttime_ = value;
+}
+
+// int32 endTime = 4;
+inline void WordList::clear_endtime() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.endtime_ = 0;
+}
+inline ::int32_t WordList::endtime() const {
+  // @@protoc_insertion_point(field_get:relay.api.WordList.endTime)
+  return _internal_endtime();
+}
+inline void WordList::set_endtime(::int32_t value) {
+  _internal_set_endtime(value);
+  // @@protoc_insertion_point(field_set:relay.api.WordList.endTime)
+}
+inline ::int32_t WordList::_internal_endtime() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.endtime_;
+}
+inline void WordList::_internal_set_endtime(::int32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.endtime_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// SentenceResponse
+
+// string requestId = 1;
+inline void SentenceResponse::clear_requestid() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.requestid_.ClearToEmpty();
+}
+inline const std::string& SentenceResponse::requestid() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:relay.api.SentenceResponse.requestId)
+  return _internal_requestid();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void SentenceResponse::set_requestid(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.requestid_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:relay.api.SentenceResponse.requestId)
+}
+inline std::string* SentenceResponse::mutable_requestid() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_requestid();
+  // @@protoc_insertion_point(field_mutable:relay.api.SentenceResponse.requestId)
+  return _s;
+}
+inline const std::string& SentenceResponse::_internal_requestid() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.requestid_.Get();
+}
+inline void SentenceResponse::_internal_set_requestid(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.requestid_.Set(value, GetArena());
+}
+inline std::string* SentenceResponse::_internal_mutable_requestid() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.requestid_.Mutable( GetArena());
+}
+inline std::string* SentenceResponse::release_requestid() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:relay.api.SentenceResponse.requestId)
+  return _impl_.requestid_.Release();
+}
+inline void SentenceResponse::set_allocated_requestid(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.requestid_.SetAllocated(value, GetArena());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.requestid_.IsDefault()) {
+          _impl_.requestid_.Set("", GetArena());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:relay.api.SentenceResponse.requestId)
+}
+
+// int32 code = 2;
+inline void SentenceResponse::clear_code() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.code_ = 0;
+}
+inline ::int32_t SentenceResponse::code() const {
+  // @@protoc_insertion_point(field_get:relay.api.SentenceResponse.code)
+  return _internal_code();
+}
+inline void SentenceResponse::set_code(::int32_t value) {
+  _internal_set_code(value);
+  // @@protoc_insertion_point(field_set:relay.api.SentenceResponse.code)
+}
+inline ::int32_t SentenceResponse::_internal_code() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.code_;
+}
+inline void SentenceResponse::_internal_set_code(::int32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.code_ = value;
+}
+
+// string message = 3;
+inline void SentenceResponse::clear_message() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.message_.ClearToEmpty();
+}
+inline const std::string& SentenceResponse::message() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:relay.api.SentenceResponse.message)
+  return _internal_message();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void SentenceResponse::set_message(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.message_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:relay.api.SentenceResponse.message)
+}
+inline std::string* SentenceResponse::mutable_message() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_message();
+  // @@protoc_insertion_point(field_mutable:relay.api.SentenceResponse.message)
+  return _s;
+}
+inline const std::string& SentenceResponse::_internal_message() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.message_.Get();
+}
+inline void SentenceResponse::_internal_set_message(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.message_.Set(value, GetArena());
+}
+inline std::string* SentenceResponse::_internal_mutable_message() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.message_.Mutable( GetArena());
+}
+inline std::string* SentenceResponse::release_message() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:relay.api.SentenceResponse.message)
+  return _impl_.message_.Release();
+}
+inline void SentenceResponse::set_allocated_message(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.message_.SetAllocated(value, GetArena());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.message_.IsDefault()) {
+          _impl_.message_.Set("", GetArena());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:relay.api.SentenceResponse.message)
 }
 
 #ifdef __GNUC__

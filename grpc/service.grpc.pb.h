@@ -44,11 +44,20 @@ class StreamInvokeService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::relay::api::HitWordResponse>> PrepareAsynchitWords(::grpc::ClientContext* context, const ::relay::api::HitWordRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::relay::api::HitWordResponse>>(PrepareAsynchitWordsRaw(context, request, cq));
     }
+    virtual ::grpc::Status sentence(::grpc::ClientContext* context, const ::relay::api::SentenceRequest& request, ::relay::api::SentenceResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::relay::api::SentenceResponse>> Asyncsentence(::grpc::ClientContext* context, const ::relay::api::SentenceRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::relay::api::SentenceResponse>>(AsyncsentenceRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::relay::api::SentenceResponse>> PrepareAsyncsentence(::grpc::ClientContext* context, const ::relay::api::SentenceRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::relay::api::SentenceResponse>>(PrepareAsyncsentenceRaw(context, request, cq));
+    }
     class async_interface {
      public:
       virtual ~async_interface() {}
       virtual void hitWords(::grpc::ClientContext* context, const ::relay::api::HitWordRequest* request, ::relay::api::HitWordResponse* response, std::function<void(::grpc::Status)>) = 0;
       virtual void hitWords(::grpc::ClientContext* context, const ::relay::api::HitWordRequest* request, ::relay::api::HitWordResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void sentence(::grpc::ClientContext* context, const ::relay::api::SentenceRequest* request, ::relay::api::SentenceResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void sentence(::grpc::ClientContext* context, const ::relay::api::SentenceRequest* request, ::relay::api::SentenceResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
     };
     typedef class async_interface experimental_async_interface;
     virtual class async_interface* async() { return nullptr; }
@@ -56,6 +65,8 @@ class StreamInvokeService final {
    private:
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::relay::api::HitWordResponse>* AsynchitWordsRaw(::grpc::ClientContext* context, const ::relay::api::HitWordRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::relay::api::HitWordResponse>* PrepareAsynchitWordsRaw(::grpc::ClientContext* context, const ::relay::api::HitWordRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::relay::api::SentenceResponse>* AsyncsentenceRaw(::grpc::ClientContext* context, const ::relay::api::SentenceRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::relay::api::SentenceResponse>* PrepareAsyncsentenceRaw(::grpc::ClientContext* context, const ::relay::api::SentenceRequest& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
@@ -67,11 +78,20 @@ class StreamInvokeService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::relay::api::HitWordResponse>> PrepareAsynchitWords(::grpc::ClientContext* context, const ::relay::api::HitWordRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::relay::api::HitWordResponse>>(PrepareAsynchitWordsRaw(context, request, cq));
     }
+    ::grpc::Status sentence(::grpc::ClientContext* context, const ::relay::api::SentenceRequest& request, ::relay::api::SentenceResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::relay::api::SentenceResponse>> Asyncsentence(::grpc::ClientContext* context, const ::relay::api::SentenceRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::relay::api::SentenceResponse>>(AsyncsentenceRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::relay::api::SentenceResponse>> PrepareAsyncsentence(::grpc::ClientContext* context, const ::relay::api::SentenceRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::relay::api::SentenceResponse>>(PrepareAsyncsentenceRaw(context, request, cq));
+    }
     class async final :
       public StubInterface::async_interface {
      public:
       void hitWords(::grpc::ClientContext* context, const ::relay::api::HitWordRequest* request, ::relay::api::HitWordResponse* response, std::function<void(::grpc::Status)>) override;
       void hitWords(::grpc::ClientContext* context, const ::relay::api::HitWordRequest* request, ::relay::api::HitWordResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void sentence(::grpc::ClientContext* context, const ::relay::api::SentenceRequest* request, ::relay::api::SentenceResponse* response, std::function<void(::grpc::Status)>) override;
+      void sentence(::grpc::ClientContext* context, const ::relay::api::SentenceRequest* request, ::relay::api::SentenceResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
      private:
       friend class Stub;
       explicit async(Stub* stub): stub_(stub) { }
@@ -85,7 +105,10 @@ class StreamInvokeService final {
     class async async_stub_{this};
     ::grpc::ClientAsyncResponseReader< ::relay::api::HitWordResponse>* AsynchitWordsRaw(::grpc::ClientContext* context, const ::relay::api::HitWordRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::relay::api::HitWordResponse>* PrepareAsynchitWordsRaw(::grpc::ClientContext* context, const ::relay::api::HitWordRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::relay::api::SentenceResponse>* AsyncsentenceRaw(::grpc::ClientContext* context, const ::relay::api::SentenceRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::relay::api::SentenceResponse>* PrepareAsyncsentenceRaw(::grpc::ClientContext* context, const ::relay::api::SentenceRequest& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_hitWords_;
+    const ::grpc::internal::RpcMethod rpcmethod_sentence_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -94,6 +117,7 @@ class StreamInvokeService final {
     Service();
     virtual ~Service();
     virtual ::grpc::Status hitWords(::grpc::ServerContext* context, const ::relay::api::HitWordRequest* request, ::relay::api::HitWordResponse* response);
+    virtual ::grpc::Status sentence(::grpc::ServerContext* context, const ::relay::api::SentenceRequest* request, ::relay::api::SentenceResponse* response);
   };
   template <class BaseClass>
   class WithAsyncMethod_hitWords : public BaseClass {
@@ -115,7 +139,27 @@ class StreamInvokeService final {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_hitWords<Service > AsyncService;
+  template <class BaseClass>
+  class WithAsyncMethod_sentence : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_sentence() {
+      ::grpc::Service::MarkMethodAsync(1);
+    }
+    ~WithAsyncMethod_sentence() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status sentence(::grpc::ServerContext* /*context*/, const ::relay::api::SentenceRequest* /*request*/, ::relay::api::SentenceResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void Requestsentence(::grpc::ServerContext* context, ::relay::api::SentenceRequest* request, ::grpc::ServerAsyncResponseWriter< ::relay::api::SentenceResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  typedef WithAsyncMethod_hitWords<WithAsyncMethod_sentence<Service > > AsyncService;
   template <class BaseClass>
   class WithCallbackMethod_hitWords : public BaseClass {
    private:
@@ -143,7 +187,34 @@ class StreamInvokeService final {
     virtual ::grpc::ServerUnaryReactor* hitWords(
       ::grpc::CallbackServerContext* /*context*/, const ::relay::api::HitWordRequest* /*request*/, ::relay::api::HitWordResponse* /*response*/)  { return nullptr; }
   };
-  typedef WithCallbackMethod_hitWords<Service > CallbackService;
+  template <class BaseClass>
+  class WithCallbackMethod_sentence : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_sentence() {
+      ::grpc::Service::MarkMethodCallback(1,
+          new ::grpc::internal::CallbackUnaryHandler< ::relay::api::SentenceRequest, ::relay::api::SentenceResponse>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::relay::api::SentenceRequest* request, ::relay::api::SentenceResponse* response) { return this->sentence(context, request, response); }));}
+    void SetMessageAllocatorFor_sentence(
+        ::grpc::MessageAllocator< ::relay::api::SentenceRequest, ::relay::api::SentenceResponse>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(1);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::relay::api::SentenceRequest, ::relay::api::SentenceResponse>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_sentence() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status sentence(::grpc::ServerContext* /*context*/, const ::relay::api::SentenceRequest* /*request*/, ::relay::api::SentenceResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* sentence(
+      ::grpc::CallbackServerContext* /*context*/, const ::relay::api::SentenceRequest* /*request*/, ::relay::api::SentenceResponse* /*response*/)  { return nullptr; }
+  };
+  typedef WithCallbackMethod_hitWords<WithCallbackMethod_sentence<Service > > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
   template <class BaseClass>
   class WithGenericMethod_hitWords : public BaseClass {
@@ -158,6 +229,23 @@ class StreamInvokeService final {
     }
     // disable synchronous version of this method
     ::grpc::Status hitWords(::grpc::ServerContext* /*context*/, const ::relay::api::HitWordRequest* /*request*/, ::relay::api::HitWordResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_sentence : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_sentence() {
+      ::grpc::Service::MarkMethodGeneric(1);
+    }
+    ~WithGenericMethod_sentence() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status sentence(::grpc::ServerContext* /*context*/, const ::relay::api::SentenceRequest* /*request*/, ::relay::api::SentenceResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -183,6 +271,26 @@ class StreamInvokeService final {
     }
   };
   template <class BaseClass>
+  class WithRawMethod_sentence : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_sentence() {
+      ::grpc::Service::MarkMethodRaw(1);
+    }
+    ~WithRawMethod_sentence() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status sentence(::grpc::ServerContext* /*context*/, const ::relay::api::SentenceRequest* /*request*/, ::relay::api::SentenceResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void Requestsentence(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
   class WithRawCallbackMethod_hitWords : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
@@ -202,6 +310,28 @@ class StreamInvokeService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     virtual ::grpc::ServerUnaryReactor* hitWords(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_sentence : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_sentence() {
+      ::grpc::Service::MarkMethodRawCallback(1,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->sentence(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_sentence() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status sentence(::grpc::ServerContext* /*context*/, const ::relay::api::SentenceRequest* /*request*/, ::relay::api::SentenceResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* sentence(
       ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
   };
   template <class BaseClass>
@@ -231,9 +361,36 @@ class StreamInvokeService final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedhitWords(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::relay::api::HitWordRequest,::relay::api::HitWordResponse>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_hitWords<Service > StreamedUnaryService;
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_sentence : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_sentence() {
+      ::grpc::Service::MarkMethodStreamed(1,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::relay::api::SentenceRequest, ::relay::api::SentenceResponse>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::relay::api::SentenceRequest, ::relay::api::SentenceResponse>* streamer) {
+                       return this->Streamedsentence(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_sentence() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status sentence(::grpc::ServerContext* /*context*/, const ::relay::api::SentenceRequest* /*request*/, ::relay::api::SentenceResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status Streamedsentence(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::relay::api::SentenceRequest,::relay::api::SentenceResponse>* server_unary_streamer) = 0;
+  };
+  typedef WithStreamedUnaryMethod_hitWords<WithStreamedUnaryMethod_sentence<Service > > StreamedUnaryService;
   typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_hitWords<Service > StreamedService;
+  typedef WithStreamedUnaryMethod_hitWords<WithStreamedUnaryMethod_sentence<Service > > StreamedService;
 };
 
 }  // namespace api

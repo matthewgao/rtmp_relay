@@ -21,8 +21,6 @@ include_directories("/root/.local/include")
 include_directories("/home/admin/.local/include")
 link_directories(${FFMPEG_LIBRARY_DIR})
 link_directories(${ASR_LIBRARY_DIR})
-link_directories("./../3rd-party/grpc/lib")
-include_directories("./../3rd-party/grpc/include")
 
 find_library(AVFORMAT_LIBRARY NAMES avformat PATHS ${FFMPEG_LIBRARY_DIR})
 find_library(AVCODEC_LIBRARY NAMES avcodec PATHS ${FFMPEG_LIBRARY_DIR})

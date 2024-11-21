@@ -12,13 +12,13 @@ extern "C" {
 #include <list>
 #include <memory>
 #include <iostream>
-#include "../grpc/biz_client.h"
 
 using namespace std;
 
 class Delayer;
 class Asr;
 class Replacer;
+class BizClient;
 
 class Relayer {
 public:

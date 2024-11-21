@@ -6,4 +6,5 @@ import "message.proto";
 //service definition.
 service StreamInvokeService {
     rpc hitWords (HitWordRequest) returns (HitWordResponse);
+    rpc sentence (SentenceRequest) returns (SentenceResponse);
 }
