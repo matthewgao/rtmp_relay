@@ -53,6 +53,8 @@ pcmresample_free(PcmResampleContext *pc);
 int 
 pcmresample_resample(PcmResampleContext *pc, const AVFrame *frame);
 
+
+class AudioSegement;
 class Asr {
 public:
     Asr(string akId, string akSecret, string m_appkey);
@@ -66,7 +68,9 @@ public:
     int sendAudio(AVPacket *pkt);
     int createAudioDecoder(AVFormatContext* input_format_context);
     int createBlackListDict(string file);
-    bool hitDict(string& word);
+
+    std::shared_ptr<std::list<AudioSegement> > 
+        hitDict(string& sentence, std::list<AlibabaNls::WordInfomation>& word_list);
 
     Asr (const Asr&) = delete;
     Asr& operator= (const Asr&) = delete;
@@ -119,4 +123,18 @@ private:
     Dictionary m_dict;
     int m_max_sentence_silence_ms;
     shared_ptr<BizClient> m_biz_client;
+};
+
+class AudioSegement {
+public:
+    AudioSegement(int64_t start, int64_t end, string text) {
+        m_start = start;
+        m_end = end;
+        m_text = text;
+    };
+
+    ~AudioSegement() {};
+    int64_t m_start;
+    int64_t m_end;
+    string  m_text;
 };

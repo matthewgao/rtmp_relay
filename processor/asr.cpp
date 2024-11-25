@@ -45,17 +45,28 @@ void onSentenceEnd(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
     Asr* asr = (Asr*)cbParam;
     
     auto list = cbEvent->getSentenceWordsList();
-    for (auto &item : list) {
-        printf(" %s |", item.text.c_str());
-        if (asr->hitDict(item.text)) {
-            printf("\nmute word: %s\n", item.text.c_str());
-            int64_t base = asr->getTimeBase();
-            int64_t start_pts = base + item.startTime;
-            int64_t end_pts = base + item.endTime;
-            asr->getDelayer()->replaceAudioPacket(start_pts, end_pts);
-            asr->sendHitWord(item.text, item.startTime, item.endTime);
-        }
+    // for (auto &item : list) {
+    //     printf(" %s |", item.text.c_str());
+    //     if (asr->hitDict(item.text)) {
+    //         printf("\nmute word: %s\n", item.text.c_str());
+    //         int64_t base = asr->getTimeBase();
+    //         int64_t start_pts = base + item.startTime;
+    //         int64_t end_pts = base + item.endTime;
+    //         asr->getDelayer()->replaceAudioPacket(start_pts, end_pts);
+    //         asr->sendHitWord(item.text, item.startTime, item.endTime);
+    //     }
+    // }
+
+    string sentence = cbEvent->getResult();
+    auto result = asr->hitDict(sentence, list);
+    for(auto& item : *result) {
+        int64_t base = asr->getTimeBase();
+        int64_t start_pts = base + item.m_start;
+        int64_t end_pts = base + item.m_end;
+        asr->getDelayer()->replaceAudioPacket(start_pts, end_pts);
+        asr->sendHitWord(item.m_text, item.m_start, item.m_end);
     }
+
     asr->sendSentence(cbEvent->getResult(), cbEvent->getSentenceBeginTime(), 
         cbEvent->getSentenceBeginTime() + cbEvent->getSentenceTime(), list);
     printf("\nALL_RESULT: %s, from %ld to %ld\n", cbEvent->getResult(), cbEvent->getSentenceBeginTime(), cbEvent->getSentenceTime());
@@ -356,9 +367,49 @@ Asr::createBlackListDict(string file) {
     return 0;
 }
 
-bool 
-Asr::hitDict(string& word) {
-    return m_dict.exists(word);
+std::shared_ptr<std::list<AudioSegement> > 
+Asr::hitDict(string& sentence, std::list<AlibabaNls::WordInfomation>& word_list)
+{
+    std::shared_ptr<std::list<AudioSegement> > out = std::make_shared<std::list<AudioSegement> >();
+
+    for(auto& bword: m_dict.getDict()){
+        size_t pos = 0;
+        int64_t end_pos = 0;
+        while ((pos = sentence.find(bword.first, end_pos)) != std::string::npos) {
+            std::cout << "Substring found at position: " << pos << std::endl;
+            end_pos = pos + bword.first.length();
+
+            int64_t start = 0;
+            int64_t end = 0;
+
+            int64_t cnt = 0;
+            bool found = false;
+            for(auto& item: word_list) {
+                
+                if (cnt <= pos) {
+                    start = item.startTime;
+                    cnt += item.text.length();
+                    continue;
+                }
+
+                if (cnt >= end_pos) {
+                    end = item.endTime;
+                    cnt += item.text.length();
+                    found = true;
+                    break;
+                }
+
+                cnt += item.text.length();
+            }
+
+            if  (found) {
+                printf("mute_word: %s, from %ld to %ld\n",bword.first.c_str(), start, end);
+                out->push_back(AudioSegement(start, end, bword.first));
+            }
+        }
+    }
+
+    return out;
 }
 
 void
