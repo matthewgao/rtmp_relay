@@ -24,6 +24,7 @@ add_definitions("-Wall")
 add_subdirectory(processor)
 add_subdirectory(censor)
 add_subdirectory(grpc)
+add_subdirectory(utils)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -static-libasan -fno-omit-frame-pointer  -g")
 #set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fsanitize=address -static-libasan ")
 aux_source_directory(. DIR_SRCS)
@@ -62,6 +63,7 @@ target_link_libraries(rtmp_relay
     z
     fdk-aac
     grpc
+    utils
 )
 
 # target_link_libraries(rtmp_relay 

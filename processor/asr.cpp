@@ -1,4 +1,5 @@
 #include "asr.h"
+#include "../utils/utils.h"
 
 #define OUTPUT_CH_LAYOUT	AV_CH_LAYOUT_MONO
 #define OUTPUT_SAMPLE_RATE	16000
@@ -371,41 +372,36 @@ std::shared_ptr<std::list<AudioSegement> >
 Asr::hitDict(string& sentence, std::list<AlibabaNls::WordInfomation>& word_list)
 {
     std::shared_ptr<std::list<AudioSegement> > out = std::make_shared<std::list<AudioSegement> >();
-
+    string tmp = removeSpaces(sentence);
     for(auto& bword: m_dict.getDict()){
         size_t pos = 0;
         int64_t end_pos = 0;
-        while ((pos = sentence.find(bword.first, end_pos)) != std::string::npos) {
+        while ((pos = tmp.find(bword.first, end_pos)) != std::string::npos) {
             std::cout << "Substring found at position: " << pos << std::endl;
             end_pos = pos + bword.first.length();
 
             int64_t start = 0;
-            int64_t end = 0;
-
+            int64_t prev_end = 0;
             int64_t cnt = 0;
-            bool found = false;
             for(auto& item: word_list) {
-                
+                printf("%s %ld %ld %d %d\n", item.text.c_str(), item.startTime, item.endTime, cnt, end_pos);
                 if (cnt <= pos) {
                     start = item.startTime;
+                    prev_end = item.endTime;
                     cnt += item.text.length();
                     continue;
                 }
 
                 if (cnt >= end_pos) {
-                    end = item.endTime;
-                    cnt += item.text.length();
-                    found = true;
                     break;
                 }
 
                 cnt += item.text.length();
+                prev_end = item.endTime;
             }
 
-            if  (found) {
-                printf("mute_word: %s, from %ld to %ld\n",bword.first.c_str(), start, end);
-                out->push_back(AudioSegement(start, end, bword.first));
-            }
+            printf("mute_word: %s, from %ld to %ld, %d, %d \n",bword.first.c_str(), start, prev_end, cnt, end_pos);
+            out->push_back(AudioSegement(start, prev_end, bword.first));
         }
     }
 

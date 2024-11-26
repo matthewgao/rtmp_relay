@@ -9,6 +9,7 @@ COPY alibabacloud-nls-cpp-sdk  /home/admin/rtmp_relay/alibabacloud-nls-cpp-sdk
 COPY censor  /home/admin/rtmp_relay/censor
 COPY processor  /home/admin/rtmp_relay/processor
 COPY grpc  /home/admin/rtmp_relay/grpc
+COPY utils  /home/admin/rtmp_relay/utils
 COPY CMakeLists.txt  /home/admin/rtmp_relay/.
 COPY dict.txt  /home/admin/rtmp_relay/.
 COPY main.cpp  /home/admin/rtmp_relay/.
