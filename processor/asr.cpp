@@ -57,7 +57,8 @@ void onSentenceEnd(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
     //         asr->sendHitWord(item.text, item.startTime, item.endTime);
     //     }
     // }
-
+    asr->sendSentence(cbEvent->getResult(), cbEvent->getSentenceBeginTime(), 
+        cbEvent->getSentenceBeginTime() + cbEvent->getSentenceTime(), list);
     string sentence = cbEvent->getResult();
     auto result = asr->hitDict(sentence, list);
     for(auto& item : *result) {
@@ -68,8 +69,6 @@ void onSentenceEnd(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
         asr->sendHitWord(item.m_text, item.m_start, item.m_end);
     }
 
-    asr->sendSentence(cbEvent->getResult(), cbEvent->getSentenceBeginTime(), 
-        cbEvent->getSentenceBeginTime() + cbEvent->getSentenceTime(), list);
     printf("\nALL_RESULT: %s, from %ld to %ld\n", cbEvent->getResult(), cbEvent->getSentenceBeginTime(), cbEvent->getSentenceTime());
 }
 

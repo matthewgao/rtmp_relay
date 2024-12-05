@@ -1,11 +1,11 @@
-FROM crpi-dq9yw3ziixu7q5k4.cn-shanghai.personal.cr.aliyuncs.com/ga0sh3n/ffmpeg61:v1.0.1
+FROM crpi-dq9yw3ziixu7q5k4.cn-shanghai.personal.cr.aliyuncs.com/ga0sh3n/rtmp_relay:v1.0.8
 
 # EXPOSE 80
-
-RUN apt install -y cmake
+#RUN apt install update
+#RUN apt install -y cmake
 
 RUN make -p /home/admin/rtmp_relay
-COPY alibabacloud-nls-cpp-sdk  /home/admin/rtmp_relay/alibabacloud-nls-cpp-sdk
+# COPY alibabacloud-nls-cpp-sdk  /home/admin/rtmp_relay/alibabacloud-nls-cpp-sdk
 COPY censor  /home/admin/rtmp_relay/censor
 COPY processor  /home/admin/rtmp_relay/processor
 COPY grpc  /home/admin/rtmp_relay/grpc
