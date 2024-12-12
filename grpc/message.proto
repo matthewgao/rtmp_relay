@@ -6,6 +6,7 @@ message HitWordRequest {
     string word = 2;
     int32 startTime = 3; 
     int32 endTime = 4;
+    string sentence = 5;
 }
 
 message HitWordResponse {

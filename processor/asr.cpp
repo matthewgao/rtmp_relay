@@ -66,7 +66,7 @@ void onSentenceEnd(AlibabaNls::NlsEvent* cbEvent, void* cbParam) {
         int64_t start_pts = base + item.m_start;
         int64_t end_pts = base + item.m_end;
         asr->getDelayer()->replaceAudioPacket(start_pts, end_pts);
-        asr->sendHitWord(item.m_text, item.m_start, item.m_end);
+        asr->sendHitWord(item.m_text, item.m_start, item.m_end, cbEvent->getResult());
     }
 
     printf("\nALL_RESULT: %s, from %ld to %ld\n", cbEvent->getResult(), cbEvent->getSentenceBeginTime(), cbEvent->getSentenceTime());
@@ -408,12 +408,12 @@ Asr::hitDict(string& sentence, std::list<AlibabaNls::WordInfomation>& word_list)
 }
 
 void
-Asr::sendHitWord(const string& word, int32_t start, int32_t end) {
+Asr::sendHitWord(const string& word, int32_t start, int32_t end, const string& sentence) {
     if (m_biz_client == nullptr) {
         return;
     }
 
-    m_biz_client->sendHitWords(word, start, end);
+    m_biz_client->sendHitWords(word, start, end, sentence);
 }
 
 void

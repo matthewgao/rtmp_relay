@@ -26,7 +26,7 @@ class BizClient {
     BizClient(const string& host);
     virtual ~BizClient() {};
 
-    void sendHitWords(const string& words, int32_t start, int32_t end);
+    void sendHitWords(const string& words, int32_t start, int32_t end, const string& sentence);
     void sendSentence(const string& sentence, int32_t start, int32_t end, std::list<AlibabaNls::WordInfomation>& word_list);
 
   private:

@@ -41,19 +41,6 @@ typedef struct {
 	int max_nb_samples;
 } PcmResampleContext;
 
-void 
-pcmresample_init(PcmResampleContext *pc);
-
-void 
-pcmresample_setparams(PcmResampleContext *pc, const PcmParams *src, const PcmParams *dst);
-
-void 
-pcmresample_free(PcmResampleContext *pc);
-
-int 
-pcmresample_resample(PcmResampleContext *pc, const AVFrame *frame);
-
-
 class AudioSegement;
 class Asr {
 public:
@@ -99,7 +86,7 @@ public:
         m_biz_client = client;
     }
 
-    void sendHitWord(const string& word, int32_t start, int32_t end);
+    void sendHitWord(const string& word, int32_t start, int32_t end, const string& sentence);
     void sendSentence(const string& sentence, int32_t start, int32_t end, std::list<AlibabaNls::WordInfomation>& word_list);
 
 private:

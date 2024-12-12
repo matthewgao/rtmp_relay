@@ -822,6 +822,7 @@ class HitWordRequest final : public ::google::protobuf::Message
   enum : int {
     kRequestIdFieldNumber = 1,
     kWordFieldNumber = 2,
+    kSentenceFieldNumber = 5,
     kStartTimeFieldNumber = 3,
     kEndTimeFieldNumber = 4,
   };
@@ -857,6 +858,22 @@ class HitWordRequest final : public ::google::protobuf::Message
   std::string* _internal_mutable_word();
 
   public:
+  // string sentence = 5;
+  void clear_sentence() ;
+  const std::string& sentence() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_sentence(Arg_&& arg, Args_... args);
+  std::string* mutable_sentence();
+  PROTOBUF_NODISCARD std::string* release_sentence();
+  void set_allocated_sentence(std::string* value);
+
+  private:
+  const std::string& _internal_sentence() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_sentence(
+      const std::string& value);
+  std::string* _internal_mutable_sentence();
+
+  public:
   // int32 startTime = 3;
   void clear_starttime() ;
   ::int32_t starttime() const;
@@ -882,8 +899,8 @@ class HitWordRequest final : public ::google::protobuf::Message
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
-      2, 4, 0,
-      46, 2>
+      3, 5, 0,
+      54, 2>
       _table_;
 
   static constexpr const void* _raw_default_instance_ =
@@ -905,6 +922,7 @@ class HitWordRequest final : public ::google::protobuf::Message
                           const HitWordRequest& from_msg);
     ::google::protobuf::internal::ArenaStringPtr requestid_;
     ::google::protobuf::internal::ArenaStringPtr word_;
+    ::google::protobuf::internal::ArenaStringPtr sentence_;
     ::int32_t starttime_;
     ::int32_t endtime_;
     mutable ::google::protobuf::internal::CachedSize _cached_size_;
@@ -1310,6 +1328,56 @@ inline ::int32_t HitWordRequest::_internal_endtime() const {
 inline void HitWordRequest::_internal_set_endtime(::int32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.endtime_ = value;
+}
+
+// string sentence = 5;
+inline void HitWordRequest::clear_sentence() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.sentence_.ClearToEmpty();
+}
+inline const std::string& HitWordRequest::sentence() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:relay.api.HitWordRequest.sentence)
+  return _internal_sentence();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void HitWordRequest::set_sentence(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.sentence_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:relay.api.HitWordRequest.sentence)
+}
+inline std::string* HitWordRequest::mutable_sentence() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_sentence();
+  // @@protoc_insertion_point(field_mutable:relay.api.HitWordRequest.sentence)
+  return _s;
+}
+inline const std::string& HitWordRequest::_internal_sentence() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.sentence_.Get();
+}
+inline void HitWordRequest::_internal_set_sentence(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.sentence_.Set(value, GetArena());
+}
+inline std::string* HitWordRequest::_internal_mutable_sentence() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.sentence_.Mutable( GetArena());
+}
+inline std::string* HitWordRequest::release_sentence() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:relay.api.HitWordRequest.sentence)
+  return _impl_.sentence_.Release();
+}
+inline void HitWordRequest::set_allocated_sentence(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.sentence_.SetAllocated(value, GetArena());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.sentence_.IsDefault()) {
+          _impl_.sentence_.Set("", GetArena());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:relay.api.HitWordRequest.sentence)
 }
 
 // -------------------------------------------------------------------

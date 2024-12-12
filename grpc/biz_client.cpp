@@ -8,11 +8,12 @@ BizClient::BizClient(const string& host) {
 }
 
 void
-BizClient::sendHitWords(const string& words, int32_t start, int32_t end) {
+BizClient::sendHitWords(const string& words, int32_t start, int32_t end, const string& sentence) {
     HitWordRequest request;
     request.set_word(words);
     request.set_starttime(start);
     request.set_endtime(end);
+    request.set_sentence(sentence);
 
     // Container for the data we expect from the server.
     HitWordResponse reply;
